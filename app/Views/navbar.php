@@ -35,7 +35,7 @@ $session = session();
                 <?php endif ?>
             </ul>
         <?php endif; ?>
-        <form class="form-inline my-2 my-lg-0">
+        <div class="form-inline my-2 my-lg-0">
             <ul class="navbar-nav mr-auto">
                 <?php if ($session->get('isLoggedIn')) : ?>
                     <li class="nav-item">
@@ -50,5 +50,6 @@ $session = session();
                     </li>
                 <?php endif ?>
             </ul>
+        </div>
     </div>
 </nav>

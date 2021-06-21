@@ -67,19 +67,19 @@ class Auth extends BaseController
                 } else {
                     $sessData = [
                         'username' => $user->username,
-                        'id' => $user->id,
+                        'id' => $user->id_user,
                         'role' => $user->role,
                         'isLoggedIn' => TRUE
                     ];
 
                     $this->session->set($sessData);
-
                     return redirect()->to(site_url('home/index'));
                 }
             } else {
                 $this->session->setFlashdata('errors', ['User Belum Terdaftar']);
             }
         }
+
         return view('login');
     }
     public function logout()
