@@ -1,7 +1,6 @@
 <?= $this->extend('layout') ?>
 <?= $this->section('content') ?>
-<h1>Hello WORLD </h1>
-<h4>
-	<?php echo session()->get('username'); ?>
-</h4>
+<p class="h4 ml-auto" style="color: palevioletred;">
+	Selamat datang, <?php echo session()->get('username'); ?>
+</p>
 <?= $this->endSection() ?>
