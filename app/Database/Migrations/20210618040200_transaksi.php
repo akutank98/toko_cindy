@@ -4,6 +4,8 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
+use function PHPUnit\Framework\containsOnly;
+
 class transaksi extends Migration
 {
     public function up()
@@ -14,6 +16,11 @@ class transaksi extends Migration
                 'constraint' => 11,
                 'unsigned' => TRUE,
                 'auto_increment' => TRUE
+            ],
+            'id_barang' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => TRUE,
             ],
             'id_pembeli' => [
                 'type' => 'INT',
@@ -54,6 +61,7 @@ class transaksi extends Migration
 
         $this->forge->addKey('id_transaksi', TRUE);
         $this->forge->addForeignKey('id_pembeli', 'user', 'id_user');
+        $this->forge->addForeignKey('id_barang', 'barang', 'id_barang');
         $this->forge->createTable('transaksi');
     }
 

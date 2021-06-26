@@ -35,6 +35,7 @@ class Barang extends BaseController
     public function create()
     {
         if ($this->request->getPost()) {
+
             $data = $this->request->getPost();
             $this->validation->run($data, 'barang');
             $errors = $this->validation->getErrors();
@@ -53,6 +54,7 @@ class Barang extends BaseController
                 // redirect segment jadi link .../barang/view/$id
                 return redirect()->to(site_url($segments));
             }
+            $this->session->setFlashdata('errors_create', $errors);
         }
         return view('barang/create');
     }
@@ -76,7 +78,6 @@ class Barang extends BaseController
                 if ($this->request->getFile('gambar')->isValid()) {
                     $b->gambar = $this->request->getFile('gambar');
                 }
-
                 $b->updated_by = $this->session->get('id');
                 $b->updated_date = date("Y-m-d H:i:s");
 
@@ -95,8 +96,16 @@ class Barang extends BaseController
     {
         $id = $this->request->uri->getSegment(3);
 
+
         $modelBarang = new \App\Models\BarangModel();
-        $delete = $modelBarang->delete($id);
+        $barang = $modelBarang->find($id);
+        $gambar = $barang->gambar;
+        if ($barang->gambar == null) {
+            $modelBarang->delete($id);
+        } else {
+            unlink('uploads/' . $gambar);
+            $modelBarang->delete($id);
+        }
 
         return redirect()->to(site_url('barang/index'));
     }

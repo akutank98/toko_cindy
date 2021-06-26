@@ -16,7 +16,7 @@
             <h4>Stok : <?= $barang->stok ?></h4>
         </div>
         <div class="row-cols-3">
-            <a href="<?= site_url('barang/index') ?>" class="btn btn-primary mt-4" id="btn_back">Back</a>
+            <a href="<?= site_url('barang/index') ?>" class="btn btn-primary mt-4" id="btn_back">List Barang</a>
         </div>
     </div>
 

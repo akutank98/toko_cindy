@@ -36,7 +36,7 @@ class Auth extends BaseController
                 return view('login');
             }
 
-            $this->session->setFlashdata('errors', $errors);
+            $this->session->setFlashdata('errors_register', $errors);
         }
 
         return view('register');

@@ -102,22 +102,22 @@ class Validation
 
 	public $barang_errors = [
 		'nama' => [
-			'required' => '{field} Harus diisi',
-			'min_length' => '{field} Minimum 3 karakter',
+			'required' => '{field} barang harus diisi',
+			'min_length' => '{field} barang minimum 3 karakter',
 		],
 		'harga' => [
-			'required' => '{field} Harus diisi',
-			'is_natural' => '{field} Tidak Boleh Negatif',
+			'required' => '{field} harus diisi',
+			'is_natural' => '{field} tidak boleh negatif',
 		],
 		'stok' => [
 			'required' => '{field} Harus diisi',
 			'is_natural' => '{field} Tidak Boleh Negatif',
 		],
 		'gambar' => [
-			'uploaded' => '{field} Harus di upload',
-			'max_size' => 'Ukuran gambar tidak boleh melebihi 8mb',
+			'uploaded' => '{field} harus di upload',
+			'max_size' => 'ukuran gambar tidak boleh melebihi 8mb',
 			'is_image' => 'input harus berupa gambar',
-			'mime_in' => 'input harus berupa gambars'
+			'mime_in' => 'input harus berupa gambar'
 		]
 	];
 
@@ -146,5 +146,25 @@ class Validation
 			'required' => '{field} Harus diisi',
 			'is_natural' => '{field} Tidak Boleh Negatif',
 		],
+	];
+	public $transaksi = [
+		'id_barang' => [
+			'rules' => 'required',
+		],
+		'id_pembeli' => [
+			'rules' => 'required',
+		],
+		'jumlah' => [
+			'rules' => 'required',
+		],
+		'total_harga' => [
+			'rules' => 'required',
+		],
+		'alamat' => [
+			'rules' => 'required',
+		],
+		'ongkir' => [
+			'rules' => 'required',
+		]
 	];
 }

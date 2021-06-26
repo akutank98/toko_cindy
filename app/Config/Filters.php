@@ -21,6 +21,7 @@ class Filters extends BaseConfig
 		'toolbar'  => DebugToolbar::class,
 		'honeypot' => Honeypot::class,
 		'auth' => \App\Filters\Auth::class,
+		'admin' => \App\Filters\Auth::class,
 	];
 
 	/**
@@ -61,5 +62,12 @@ class Filters extends BaseConfig
 	 *
 	 * @var array
 	 */
-	public $filters = [];
+	//allow access untuk barang khusus admin
+	public $filters = [
+		'admin' => [
+			'before' => [
+				'barang/*',
+			]
+		]
+	];
 }

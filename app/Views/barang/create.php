@@ -1,11 +1,11 @@
-<?= $this->extend('layout') ?>
-<?= $this->section('content') ?>
+<?= $this->extend('layout'); ?>
+<?= $this->section('content'); ?>
 <?php
 
 $nama = [
     'name' => 'nama',
     'id' => 'nama',
-    'value' => null,
+    'value' =>  null,
     'class' => 'form-control',
 ];
 
@@ -42,9 +42,23 @@ $submit = [
     'type' => 'submit',
 ];
 
-?>
-<h1>Tambah Barang</h1>
+$session = session();
+$errors = $session->getFlashdata('errors_create');
 
+?>
+
+<h1>Tambah Barang</h1>
+<?php if ($errors != null) : ?>
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Error </h4>
+        <hr>
+        <p class="mb-0">
+            <?php foreach ($errors as $err) {
+                echo $err . '<br>';
+            } ?>
+        </p>
+    </div>
+<?php endif ?>
 <?= form_open_multipart('Barang/create') ?>
 <div class="form-group">
     <?= form_label("Nama", "nama") ?>
