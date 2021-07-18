@@ -67,21 +67,21 @@ $submit = [
         </div>
         <div class="col-6">
             <h4>Pengiriman</h4>
-            <form action="" method="POST">
-                <div class="form-group">
-                    <label for="provinsi">Pilih Provinsi</label>
-                    <select class="form-control" id="provinsi" name="provinsi">
-                        <option>Select Provinsi</option>
-                        <?php foreach ($provinsi as $p) : ?>
-                            <option value="<?= $p->province_id ?>"><?= $p->province ?></option>
-                        <?php endforeach ?>
-                    </select>
-                </div>
-            </form>
+
+            <div class="form-group">
+                <label for="provinsi">Pilih Provinsi</label>
+                <select class="form-control" id="provinsi" name="provinsi" id="provinsi">
+                    <option>Select Provinsi</option>
+                    <?php foreach ($provinsi as $p) : ?>
+                        <option value="<?= $p->province_id ?>"><?= $p->province ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label for="kabupaten">Pilih Kabupaten/Kota</label>
                 <select class="form-control" id="kabupaten" name="kabupaten">
-                    <option>Select Kabupaten/kota</option>
+                    <option>Pilih Kabupaten/kota</option>
                 </select>
             </div>
             <div class="form-group">
@@ -127,7 +127,7 @@ $submit = [
                             <h4>Komentar</h4>
                         </div>
                         <div class="col-md-6 text-right">
-                            <a href="<?= site_url('Komentar/create/' . $model->id) ?>" class="btn btn-link">Tinggalkan Komentar</a>
+                            <a href="<?= site_url('Komentar/create/' . $model->id_barang) ?>" class="btn btn-link">Tinggalkan Komentar</a>
                         </div>
                     </div>
                 </div>
@@ -152,11 +152,13 @@ $submit = [
     </div>
 </div>
 
+
 <?= $this->endSection(); ?>
 <?= $this->section('script'); ?>
 <script>
     $('document').ready(function() {
-        var jumlah_pembelian = 1;
+        var jumlah_pembelian = $("#jumlah").val();
+
         var harga = <?= $model->harga ?>;
         var ongkir = 0;
         $("#provinsi").on('change', function() {
@@ -188,14 +190,13 @@ $submit = [
                 url: "<?= site_url('etalase/getcost') ?>",
                 type: 'GET',
                 data: {
-                    'origin': 154,
+                    'origin': 492, //Tulungagung
                     'destination': id_city,
-                    'weight': 1000,
+                    'weight': 500,
                     'courier': 'jne'
                 },
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data);
                     var results = data["rajaongkir"]["results"][0]["costs"];
                     for (var i = 0; i < results.length; i++) {
                         var text = results[i]["description"] + "(" + results[i]["service"] + ")";
@@ -221,6 +222,7 @@ $submit = [
 
         $("#jumlah").on("change", function() {
             jumlah_pembelian = $("#jumlah").val();
+
             var total_harga = (jumlah_pembelian * harga) + ongkir;
             $("#total_harga").val(total_harga);
         });

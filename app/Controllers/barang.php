@@ -14,10 +14,14 @@ class Barang extends BaseController
     public function index()
     {
         $barangModel = new \App\Models\BarangModel();
-        $barangs = $barangModel->findAll();
+
+        $data = [
+            'barangs' => $barangModel->paginate(10),
+            'pager' => $barangModel->pager,
+        ];
 
         return view('barang/index', [
-            'barangs' => $barangs,
+            'data' => $data,
         ]);
     }
 

@@ -3,7 +3,7 @@
 
 <div class="container">
     <div class="row">
-        <?php foreach ($model as $m) : ?>
+        <?php foreach ($data['model'] as $m) : ?>
             <div class="col-12 col-md-4">
                 <div class="card text-center">
                     <div class="card-header">
@@ -22,5 +22,7 @@
         <?php endforeach ?>
     </div>
 </div>
-
+<div style="float:left">
+    <?= $data['pager']->links('default', 'custom_pagination') ?>
+</div>
 <?= $this->endSection() ?>

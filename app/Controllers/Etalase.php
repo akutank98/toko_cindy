@@ -15,10 +15,15 @@ class Etalase extends BaseController
 
     public function index()
     {
-        $barang = new \App\Models\BarangModel();
-        $model = $barang->findAll();
+        $barangModel = new \App\Models\BarangModel();
+
+        $data = [
+            'model' => $barangModel->paginate(12),
+            'pager' => $barangModel->pager,
+        ];
+
         return view('etalase/index', [
-            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function beli()
@@ -29,7 +34,6 @@ class Etalase extends BaseController
         $komentar = $modelKomentar->where('id_barang', $id)->findAll();
         $model = $modelBarang->find($id);
         $provinsi = $this->rajaongkir('province');
-
 
         if ($this->request->getPost()) {
             $data = $this->request->getPost();
@@ -44,7 +48,7 @@ class Etalase extends BaseController
                 $jumlah_pembelian = $this->request->getPost('jumlah');
                 $barang = $barangModel->find($id_barang);
                 $entityBarang = new \App\Entities\Barang();
-                $entityBarang->id = $id_barang;
+                $entityBarang->id_barang = $id_barang;
                 $entityBarang->stok = $barang->stok - $jumlah_pembelian;
                 $barangModel->save($entityBarang);
                 $transaksi->fill($data);

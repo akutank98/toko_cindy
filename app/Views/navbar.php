@@ -36,7 +36,7 @@ $session = session();
             </ul>
         <?php endif; ?>
         <div class="form-inline my-2 my-lg-0">
-            <ul class="navbar-nav mr-auto">
+            <ul class="nav navbar-nav navbar-right">
                 <?php if ($session->get('isLoggedIn')) : ?>
                     <li class="nav-item">
                         <a class="btn btn-success" href="<?= site_url('auth/logout') ?>">Logout</a>
