@@ -1,8 +1,16 @@
 <?= $this->extend('layout'); ?>
 <?= $this->section('content'); ?>
 <div class="container">
+	<div class="container-fluid">
+		<div>
+			<h1>Barang</h1>
+		</div>
+		<form class="d-flex mb-3" role="form" action="<?= site_url('barang/search'); ?>" method="post">
+			<input class="form-control me-2" name="barang" type="search" placeholder="Cari Barang" aria-label="Search">
+			<button type="submit" class="btn btn-info">Search</button>
+		</form>
+	</div>
 	<div class="row">
-		<h1>Barang</h1>
 		<table class="table">
 			<thead>
 				<th scope="col">No</th>
@@ -53,7 +61,6 @@
 						</td>
 					</tr>
 				<?php endforeach ?>
-
 			</tbody>
 		</table>
 	</div>

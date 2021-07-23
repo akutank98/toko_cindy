@@ -22,4 +22,20 @@ class User extends BaseController
             'data' => $data,
         ]);
     }
+    public function search()
+    {
+        $model = new \App\Models\UserModel();
+        if (isset($_POST)) {
+            $username = $_POST['username'];
+        }
+        $data = [
+            'users' => $model->like('username', $username)
+                ->paginate(10),
+            'pager' => $model->pager,
+        ];
+
+        return view('user/index', [
+            'data' => $data,
+        ]);
+    }
 }

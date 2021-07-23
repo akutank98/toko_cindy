@@ -32,14 +32,17 @@
 
     <?= $this->include('navbar'); ?>
 
-    <main role="main" class="container">
+    <main role="main" class="container" style="height: 90vh;">
         <?= $this->renderSection('content'); ?>
     </main><!-- /.container -->
-
+    <?php if (session()->get('role') == 2) : ?>
+        <?= $this->include('footer'); ?>
+    <?php endif ?>
     <script src="<?= base_url('jquery-3.5.1.min.js'); ?>"></script>
     <script src="<?= base_url('bootstrap-4.0.0/dist/js/bootstrap.min.js'); ?>"></script>
 
     <?= $this->renderSection('script') ?>
+
 </body>
 
 </html>

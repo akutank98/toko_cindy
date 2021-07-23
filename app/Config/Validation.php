@@ -177,4 +177,12 @@ class Validation
 			'required' => '{field} Harus diisi',
 		],
 	];
+	public $deskripsi = [
+		'id_barang' => 'required|unique',
+		'ukuran' => 'required',
+	];
+	public $deskripsiUpdate = [
+		'ukuran' => 'required',
+		'berat' => 'is_natural',
+	];
 }

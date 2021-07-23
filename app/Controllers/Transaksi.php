@@ -13,7 +13,6 @@ class Transaksi extends BaseController
         helper('form');
         $this->validation = \Config\Services::validation();
         $this->session = session();
-        $this->email = \Config\Services::email();
     }
 
     public function view()
@@ -33,59 +32,49 @@ class Transaksi extends BaseController
 
     public function index()
     {
-        $transaksiModel = new \App\Models\TransaksiModel();
-        $model = $transaksiModel->findAll();
+        $transaksiModel = new \App\Models\transaksiModel();
+
+        $data = [
+            'model' => $transaksiModel->paginate(9),
+            'pager' => $transaksiModel->pager,
+        ];
+
         return view('transaksi/index', [
-            'model' => $model,
+            'data' => $data,
         ]);
         $this->session = session();
     }
-    public function invoice()
+    public function belumLunas()
     {
-        $id = $this->request->uri->getSegment(3);
+        $transaksiModel = new \App\Models\transaksiModel();
 
-        $transaksiModel = new \App\Models\TransaksiModel();
-        $transaksi = $transaksiModel->find($id);
+        $data = [
+            'model' => $transaksiModel->where('status', 0)->paginate(9),
+            'pager' => $transaksiModel->pager,
+        ];
 
-        $userModel = new \App\Models\UserModel();
-        $pembeli = $userModel->find($transaksi->id_pembeli);
-
-        $barangModel = new \App\Models\BarangModel();
-        $barang = $barangModel->find($transaksi->id_barang);
-
-        $html = view('transaksi/invoice', [
-            'transaksi' => $transaksi,
-            'pembeli' => $pembeli,
-            'barang' => $barang,
+        return view('transaksi/index', [
+            'data' => $data,
         ]);
-
-        $pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false);
-
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Toko Cindy');
-        $pdf->SetTitle('Invoice');
-        $pdf->SetSubject('Invoice');
-
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        $pdf->addPage();
-
-        // output the HTML content
-        $pdf->writeHTML($html, true, false, true, false, '');
-        //set response
-        $this->response->setContentType('application/pdf');
-        $name = 'invoice_tr-' . $transaksi->id_transaksi . '.pdf';
-
-        //Close and output PDF document
-        $pdf->Output(__DIR__ . "/../../public/uploads/$name", 'F');
-
-        $attachment = base_url('uploads/Invoice.pdf');
-
-        $message = "<h1>Invoice Pembelian</h1><p>Kepada " . $pembeli->username . " Berikut Invoice atas pembelian " . $barang->nama . "</p>";
-        //buggy
-        $this->sendEmail($attachment, 'akutank98@gmail.com', 'Invoice', $message);
+        $this->session = session();
     }
+    public function search()
+    {
+        $model = new \App\Models\TransaksiModel();
+        if (isset($_POST)) {
+            $id = $_POST['id'];
+        }
+        $data = [
+            'model' => $model->where('id_transaksi', $id)
+                ->paginate(10),
+            'pager' => $model->pager,
+        ];
+
+        return view('transaksi/index', [
+            'data' => $data,
+        ]);
+    }
+
     public function downloadInvoice()
     {
         $id = $this->request->uri->getSegment(3);
@@ -129,6 +118,7 @@ class Transaksi extends BaseController
     public function updateStatusTransaksi()
     {
         $id = $this->request->uri->getSegment(3);
+        $from = $this->request->uri->getSegment(2);
         $transaksiModel = new \App\Models\TransaksiModel();
         $transaksi = $transaksiModel->find($id);
         $t = new \App\Entities\Transaksi();
@@ -153,19 +143,11 @@ class Transaksi extends BaseController
         $t->updated_date = date("Y-m-d H:i:s");
 
         $transaksiModel->save($t);
-        return redirect()->to(site_url('transaksi/index'));
-    }
-    private function sendEmail($attachment, $to, $title, $message)
-    {
-        $this->email->setFrom('akutank2000@gmail.com', 'Toko Cindy');
-        $this->email->setTo($to);
-        $this->email->attach($attachment);
-        $this->email->setSubject($title);
-        $this->email->setMessage($message);
-        if (!$this->email->send()) {
-            return false;
+
+        if ($from == 'updateStatusTransaksi') {
+            return redirect()->to(site_url('transaksi/belumLunas'));
         } else {
-            return true;
+            return redirect()->to(site_url('transaksi/index'));
         }
     }
 }

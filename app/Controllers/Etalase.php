@@ -26,6 +26,23 @@ class Etalase extends BaseController
             'data' => $data,
         ]);
     }
+    public function search()
+    {
+        $barangModel = new \App\Models\BarangModel();
+
+        if (isset($_POST)) {
+            $barang = $_POST['nama_barang'];
+        }
+        $data = [
+            'model' => $barangModel->like('nama', $barang)
+                ->paginate(10),
+            'pager' => $barangModel->pager,
+        ];
+
+        return view('etalase/index', [
+            'data' => $data,
+        ]);
+    }
     public function beli()
     {
         $id = $this->request->uri->getSegment(3);

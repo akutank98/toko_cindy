@@ -2,6 +2,12 @@
 <?= $this->section('content'); ?>
 
 <div class="container">
+    <div class="container-fluid mb-3">
+        <form class="d-flex" role="form" action="<?= site_url('etalase/search'); ?>" method="post">
+            <input class="form-control me-2" name="nama_barang" type="search" placeholder="Cari Barang" aria-label="Search">
+            <button type="submit" class="btn btn-info">Search</button>
+        </form>
+    </div>
     <div class="row">
         <?php foreach ($data['model'] as $m) : ?>
             <div class="col-12 col-md-4">
