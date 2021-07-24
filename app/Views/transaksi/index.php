@@ -19,7 +19,7 @@
 				<th>Pembeli</th>
 				<th>Alamat</th>
 				<th>Jumlah</th>
-				<th>Harga</th>
+				<th>Total</th>
 				<th>Status</th>
 				<th>Action</th>
 			</tr>

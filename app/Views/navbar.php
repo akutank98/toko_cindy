@@ -34,6 +34,9 @@ $session = session();
                     <li class="nav-item">
                         <a class="nav-link" href="<?= site_url('user/index') ?>">User</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= site_url('log/index') ?>">Log</a>
+                    </li>
                     <!-- admin -->
                 <?php elseif (session()->get('role') == 1) : ?>
                     <li class="nav-item dropdown">

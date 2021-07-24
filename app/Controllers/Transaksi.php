@@ -143,7 +143,15 @@ class Transaksi extends BaseController
         $t->updated_date = date("Y-m-d H:i:s");
 
         $transaksiModel->save($t);
-
+        $logModel = new \App\Models\LogModel();
+        $l = new \App\Entities\Log();
+        $l->action = 'update';
+        $l->table_name = 'transaksi';
+        $l->id_modified = $id;
+        $l->change_date = date("Y-m-d H:i:s");
+        $l->id_modifier = $this->session->get('id');
+        $l->keterangan = 'status transaksi';
+        $logModel->save($l);
         if ($from == 'updateStatusTransaksi') {
             return redirect()->to(site_url('transaksi/belumLunas'));
         } else {

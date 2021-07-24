@@ -60,12 +60,9 @@ class Barang extends BaseController
         $deskripsiModel = new \App\Models\DetailBarangModel();
         $entityDes = new \App\Entities\DetailBarang();
         $barangModel = new \App\Models\BarangModel();
-        $barang = $barangModel->first($id_barang);
-
+        $barang = $barangModel->find($id_barang);
 
         if ($this->request->getPost()) {
-            $deskripsi = $deskripsiModel->find($id_barang);
-
             $errors = $this->validation->getErrors();
             $data = $this->request->getPost();
             $entityDes->fill($data);
@@ -73,13 +70,23 @@ class Barang extends BaseController
             $this->validation->run($data, 'deskripsi');
 
             if (!$errors) {
-
                 $entityDes->fill($data);
 
                 $entityDes->created_by = $this->session->get('id');
                 $entityDes->created_date = date("Y-m-d H:i:s");
                 $deskripsiModel->save($entityDes);
                 $segments = ['barang', 'view', $id_barang];
+
+                // logging
+                $logModel = new \App\Models\LogModel();
+                $l = new \App\Entities\Log();
+                $l->action = 'create';
+                $l->table_name = 'detail_barang';
+                $l->id_modified = $deskripsiModel->insertID();
+                $l->change_date = date("Y-m-d H:i:s");
+                $l->id_modifier = $this->session->get('id');
+                $logModel->save($l);
+
                 return redirect()->to(site_url($segments));
             } else {
                 $this->session->setFlashdata('errors_createDeskripsi', $errors);
@@ -87,6 +94,7 @@ class Barang extends BaseController
         } else {
             return view('barang/createDeskripsi', [
                 'barang' => $barang,
+                $id_barang,
             ]);
         }
     }
@@ -111,6 +119,16 @@ class Barang extends BaseController
                 $id_barang = $barangModel->insertID();
                 $segments = ['barang', 'view', $id_barang];
                 // redirect segment jadi link .../barang/view/$id
+                // logging
+                $logModel = new \App\Models\LogModel();
+                $l = new \App\Entities\Log();
+                $l->action = 'delete';
+                $l->table_name = 'barang';
+                $l->id_modified = $id_barang;
+                $l->change_date = date("Y-m-d H:i:s");
+                $l->id_modifier = $this->session->get('id');
+                $logModel->save($l);
+
                 return redirect()->to(site_url($segments));
             }
             $this->session->setFlashdata('errors_create', $errors);
@@ -142,6 +160,15 @@ class Barang extends BaseController
                 $b->updated_date = date("Y-m-d H:i:s");
                 $barangModel->save($b);
                 $segments = ['Barang', 'view', $id_barang];
+                // logging
+                $logModel = new \App\Models\LogModel();
+                $l = new \App\Entities\Log();
+                $l->action = 'update';
+                $l->table_name = 'barang';
+                $l->id_modified = $id_barang;
+                $l->change_date = date("Y-m-d H:i:s");
+                $l->id_modifier = $this->session->get('id');
+                $logModel->save($l);
 
                 return redirect()->to(base_url($segments));
             }
@@ -168,13 +195,22 @@ class Barang extends BaseController
                 $d->id_barang = $id_barang;
 
                 $d->fill($data);
-
                 $d->updated_by = $this->session->get('id');
                 $d->updated_date = date("Y-m-d H:i:s");
                 $d->id_detail = $deskripsi->id_detail;
 
                 $deskripsiModel->save($d);
                 $segments = ['Barang', 'view', $id_barang];
+
+                // logging
+                $logModel = new \App\Models\LogModel();
+                $l = new \App\Entities\Log();
+                $l->action = 'update';
+                $l->table_name = 'detail_barang';
+                $l->id_modified = $deskripsi->id_detail;
+                $l->change_date = date("Y-m-d H:i:s");
+                $l->id_modifier = $this->session->get('id');
+                $logModel->save($l);
 
                 return redirect()->to(base_url($segments));
             }
@@ -201,7 +237,15 @@ class Barang extends BaseController
             unlink('uploads/' . $gambar);
             $modelBarang->delete($id);
         }
-
+        // logging
+        $logModel = new \App\Models\LogModel();
+        $l = new \App\Entities\Log();
+        $l->action = 'delete';
+        $l->table_name = 'barang';
+        $l->id_modified = $id;
+        $l->change_date = date("Y-m-d H:i:s");
+        $l->id_modifier = $this->session->get('id');
+        $logModel->save($l);
         return redirect()->to(site_url('barang/index'));
     }
     public function barangKosong()

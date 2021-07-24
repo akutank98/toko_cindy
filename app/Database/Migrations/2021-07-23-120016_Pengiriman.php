@@ -28,6 +28,9 @@ class Pengiriman extends Migration
 			],
 			'tujuan' => [
 				'type' => 'TEXT',
+			], 'status' => [
+				'type' => 'TEXT',
+				'default' => 'belum dikirim'
 			],
 			'created_by' => [
 				'type' => 'INT',

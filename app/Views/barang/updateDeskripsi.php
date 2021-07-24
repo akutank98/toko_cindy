@@ -1,9 +1,6 @@
 <?= $this->extend('layout') ?>
 <?= $this->section('content') ?>
 <?php
-
-use PhpParser\Node\Stmt\Echo_;
-
 $session = session();
 $errors = $session->getFlashdata('errors_updateDeskripsi');
 ?>
@@ -22,6 +19,7 @@ $errors = $session->getFlashdata('errors_updateDeskripsi');
         <?php endif ?>
         <h4 class="text-left">Ubah Deskripsi barang dengan ID : <?= $barang->id_barang; ?></h4>
         <form action="" class="form-control" method="post">
+            <?= csrf_field(); ?>
             <label>Masukkan ukuran</label>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" <?php if ($des->ukuran == 'S')  echo "checked"; ?> name="ukuran" id="inlineRadio1" value="S">

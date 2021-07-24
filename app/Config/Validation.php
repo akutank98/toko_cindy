@@ -185,4 +185,11 @@ class Validation
 		'ukuran' => 'required',
 		'berat' => 'is_natural',
 	];
+	public $log = [
+		'action' => 'required',
+		'table_name' => 'required',
+		'id_modified' => 'required',
+		'change_date' => 'required',
+		'id_modifier' => 'required',
+	];
 }
