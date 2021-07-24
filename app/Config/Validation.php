@@ -85,4 +85,111 @@ class Validation
 			'required' => '{field} Harus Diisi',
 		],
 	];
+	public $barang = [
+		'nama' => [
+			'rules' => 'required|min_length[3]',
+		],
+		'harga' => [
+			'rules' => 'required|is_natural',
+		],
+		'stok' => [
+			'rules' => 'required|is_natural',
+		],
+		'gambar' => [
+			'rules' => 'uploaded[gambar]|max_size[gambar,8192]|is_image[gambar]|mime_in[gambar,image/jpg,image/png,image/jpeg]',
+		]
+	];
+
+	public $barang_errors = [
+		'nama' => [
+			'required' => '{field} barang harus diisi',
+			'min_length' => '{field} barang minimum 3 karakter',
+		],
+		'harga' => [
+			'required' => '{field} harus diisi',
+			'is_natural' => '{field} tidak boleh negatif',
+		],
+		'stok' => [
+			'required' => '{field} Harus diisi',
+			'is_natural' => '{field} Tidak Boleh Negatif',
+		],
+		'gambar' => [
+			'uploaded' => '{field} harus di upload',
+			'max_size' => 'ukuran gambar tidak boleh melebihi 8mb',
+			'is_image' => 'input harus berupa gambar',
+			'mime_in' => 'input harus berupa gambar'
+		]
+	];
+
+	public $barangupdate = [
+		'nama' => [
+			'rules' => 'required|min_length[3]',
+		],
+		'harga' => [
+			'rules' => 'required|is_natural',
+		],
+		'stok' => [
+			'rules' => 'required|is_natural',
+		],
+	];
+
+	public $barangupdate_errors = [
+		'nama' => [
+			'required' => '{field} Harus diisi',
+			'min_length' => '{field} Minimum 3 karakter',
+		],
+		'harga' => [
+			'required' => '{field} Harus diisi',
+			'is_natural' => '{field} Tidak Boleh Negatif',
+		],
+		'stok' => [
+			'required' => '{field} Harus diisi',
+			'is_natural' => '{field} Tidak Boleh Negatif',
+		],
+	];
+	public $transaksi = [
+		'id_barang' => [
+			'rules' => 'required',
+		],
+		'id_pembeli' => [
+			'rules' => 'required',
+		],
+		'jumlah' => [
+			'rules' => 'required',
+		],
+		'total_harga' => [
+			'rules' => 'required',
+		],
+		'alamat' => [
+			'rules' => 'required',
+		],
+		'ongkir' => [
+			'rules' => 'required',
+		]
+	];
+	public $komentar = [
+		'komentar' => [
+			'rules' => 'required',
+		],
+	];
+	public $komentar_errors = [
+		'komentar' => [
+			'required' => '{field} Harus diisi',
+		],
+	];
+	public $deskripsi = [
+		'id_barang' => 'required|unique',
+		'ukuran' => 'required',
+	];
+	public $deskripsiUpdate = [
+		'ukuran' => 'required',
+		'berat' => 'is_natural',
+	];
+	public $log = [
+		'action' => 'required',
+		'table_name' => 'required',
+		'id_modified' => 'required',
+		'change_date' => 'required',
+		'id_modifier' => 'required',
+	];
 }

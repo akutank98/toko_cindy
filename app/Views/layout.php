@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>Toko Cindy</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
 
@@ -32,12 +32,17 @@
 
     <?= $this->include('navbar'); ?>
 
-    <main role="main" class="container">
+    <main role="main" class="container" style="height: 90vh;">
         <?= $this->renderSection('content'); ?>
     </main><!-- /.container -->
-
-    <script src="<?= base_url('bootstrap-4.0.0/dist/js/bootstrap.min.js'); ?>"></script>
+    <?php if (session()->get('role') == 2) : ?>
+        <?= $this->include('footer'); ?>
+    <?php endif ?>
     <script src="<?= base_url('jquery-3.5.1.min.js'); ?>"></script>
+    <script src="<?= base_url('bootstrap-4.0.0/dist/js/bootstrap.min.js'); ?>"></script>
+
+    <?= $this->renderSection('script') ?>
+
 </body>
 
 </html>

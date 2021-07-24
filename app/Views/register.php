@@ -19,7 +19,7 @@ $repeatPassword = [
     'class' => 'form-control'
 ];
 $session = session();
-$error = $session->getFlashData('errors');
+$error = $session->getFlashData('errors_register');
 
 ?>
 <h1>Register Form</h1>
