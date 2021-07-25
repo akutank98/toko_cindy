@@ -63,19 +63,19 @@ $submit = [
             <div class="card">
                 <div class="card-body">
                     <img class="img-fluid" src="<?= base_url('uploads/' . $model->gambar) ?>" />
-                    <h1 style="font-size: ;" class="text-success"><?= $model->nama ?></h1>
-                    <h4 style="font-size: 2vw;"> Harga : <?= $model->harga ?></h4>
-                    <h4 style="font-size: 2vw;"> Stok : <?= $model->stok ?></h4>
+                    <h1 style="font-size: 2.2rem;" class="text-success"><?= $model->nama ?></h1>
+                    <h4 style="font-size: 1.1rem;"> Harga : <?= $model->harga ?></h4>
+                    <h4 style="font-size: 1.1rem;"> Stok : <?= $model->stok ?></h4>
                     <?php if ($detail == null) : ?>
-                        <div class="text-body" style="font-size:2vw;">Berat : - gram</div>
-                        <div class="text-body" style="font-size:2vw;">Ukuran : - </div>
-                        <div class="text-body" style="font-size:2vw;">Deskripsi : </div>
-                        <p class="text-body" style="font-size:1.7vw;">Tidak ada deskripsi</p>
+                        <div class="text-body" style="font-size:1.1rem;">Berat : - gram</div>
+                        <div class="text-body" style="font-size:1.1rem;">Ukuran : - </div>
+                        <div class="text-body" style="font-size:1.1rem;">Deskripsi : </div>
+                        <p class="text-body" style="font-size:1.1rem;">Tidak ada deskripsi</p>
                     <?php else : ?>
-                        <div class="text-body" style="font-size:2vw;">Berat : <?= $detail->berat; ?> gram</div>
-                        <div class="text-body" style="font-size:2vw;">Ukuran : <?= $detail->ukuran; ?> </div>
-                        <div class="text-body" style="font-size:2vw;">Deskripsi : </div>
-                        <p class="text-body" style="font-size:1.7vw;"><?= $detail->deskripsi; ?></p>
+                        <div class="text-body" style="font-size:1.1rem;">Berat : <?= $detail->berat; ?> gram</div>
+                        <div class="text-body" style="font-size:1.1rem;">Ukuran : <?= $detail->ukuran; ?> </div>
+                        <div class="text-body" style="font-size:1.1rem;">Deskripsi : </div>
+                        <p class="text-body" style="font-size:1.1rem;"><?= $detail->deskripsi; ?></p>
                     <?php
                         if ($detail == null) {
                             $b = 500;
@@ -210,7 +210,7 @@ $submit = [
                 data: {
                     'origin': 492, //Tulungagung
                     'destination': id_city,
-                    'weight': berat,
+                    'weight': berat * jumlah_pembelian,
                     'courier': 'jne'
                 },
                 dataType: 'json',
@@ -247,9 +247,11 @@ $submit = [
                 $(this).val(min);
             }
 
+            $("ongkir").val(ongkir);
+            console.log(berat);
             jumlah_pembelian = $("#jumlah").val();
             var total_harga = (jumlah_pembelian * harga) + ongkir;
-            $("ongkir").val(ongkir);
+
             $("#total_harga").val(total_harga);
         });
     });
