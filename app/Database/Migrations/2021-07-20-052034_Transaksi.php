@@ -45,6 +45,9 @@ class Transaksi extends Migration
 				'type' => 'INT',
 				'constraint' => 11,
 			],
+			'resi' => [
+				'type' => 'TEXT'
+			],
 			'created_by' => [
 				'type' => 'INT',
 				'constraint' => 11,

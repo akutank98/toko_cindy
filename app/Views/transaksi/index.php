@@ -14,7 +14,7 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th>No</th>
+				<th>ID</th>
 				<th>Barang</th>
 				<th>Pembeli</th>
 				<th>Alamat</th>
@@ -27,6 +27,28 @@
 		<tbody>
 
 			<?php foreach ($data['model'] as $index => $transaksi) : ?>
+				<div class="modal fade" id="exampleModalResi<?= $transaksi->id_transaksi; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">
+									Masukkan resi transaksi
+								</h5>
+							</div>
+							<form action="/transaksi/updateresi/<?= $transaksi->id_transaksi; ?>" method="post">
+								<?= csrf_field() ?>
+								<div class="modal-body">
+									<label class="form-label-group" for="resi">Resi : </label>
+									<input class="form-control" name="resi" id="<?= 'resi' . $transaksi->id_transaksi; ?>" value="<?= $transaksi->resi; ?>" type="number">
+								</div>
+								<div class=" modal-footer">
+									<button onclick="document.getElementById('<?= 'stok' . $transaksi->id_transaksi; ?>').value = <?= $transaksi->resi; ?>" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+									<button type="submit" class="btn btn-info">Simpan</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
 				<?php $id = $transaksi->id_transaksi ?>
 				<tr>
 					<td><?= $transaksi->id_transaksi; ?></td>
@@ -55,10 +77,7 @@
 								<div class="modal-content">
 									<div class="modal-header">
 										<h5 class="modal-title" id="exampleModalLabel">
-											Konfirmasi Pembayaran</h5>
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-											<span aria-hidden="true">&times;</span>
-										</button>
+											Ubah Status Pembayaran</h5>
 									</div>
 									<div class="modal-body">
 										Apakah anda yakin akan mengubah status pembayaran transaksi dengan ID <?= $transaksi->id_transaksi; ?>
@@ -72,8 +91,13 @@
 						</div>
 					</td>
 					<td>
-						<a href="<?= site_url('transaksi/view/' . $transaksi->id_transaksi) ?>" class="btn btn-warning">View</a>
+						<a href="<?= site_url('transaksi/view/' . $transaksi->id_transaksi) ?>" class="btn btn-info">View</a>
 						<a href=" <?= site_url('transaksi/downloadInvoice/' . $transaksi->id_transaksi) ?>" class="btn btn-primary" target="_blank">Download</a>
+						<!-- hanya transaksi yang sudah lunas yang dapat ditambah / diubah resi -->
+						<?php if ($transaksi->status == 1) {  ?>
+							<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalResi<?= $transaksi->id_transaksi; ?>">Resi</button>
+						<?php } ?>
+
 					</td>
 				</tr>
 			<?php endforeach ?>

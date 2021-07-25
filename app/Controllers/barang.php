@@ -43,6 +43,7 @@ class Barang extends BaseController
     public function view()
     {
         $id_barang = $this->request->uri->getSegment(3);
+
         $barangModel = new \App\Models\BarangModel();
         $deskripsiModel = new \App\Models\DetailBarangModel();
         $des = $deskripsiModel->where('id_barang', $id_barang)->first();
@@ -177,6 +178,34 @@ class Barang extends BaseController
             'barang' => $barang,
         ]);
     }
+    public function updateStok()
+    {
+        //masih serror
+        $barangModel = new \App\Models\BarangModel();
+
+
+        $id_barang = $this->request->uri->getSegment(3);
+        $stok = $this->request->getPost('stok');
+        $data = [
+            'stok' => $stok,
+            'updated_by' => $this->session->get('id'),
+            'updated_date' => date("Y-m-d H:i:s")
+        ];
+        $barangModel->update($id_barang, $data);
+
+        // logging
+        $logModel = new \App\Models\LogModel();
+        $l = new \App\Entities\Log();
+        $l->action = 'update';
+        $l->table_name = 'barang';
+        $l->id_modified = $id_barang;
+        $l->change_date = date("Y-m-d H:i:s");
+        $l->id_modifier = $this->session->get('id');
+        $l->keterangan = 'update stok';
+        $logModel->save($l);
+        return redirect()->to(site_url('barang/index'));
+    }
+
     public function updateDeskripsi()
     {
         $id_barang = $this->request->uri->getSegment(3);
@@ -251,7 +280,7 @@ class Barang extends BaseController
     public function barangKosong()
     {
         $barangModel = new \App\Models\BarangModel();
-
+        $from = $this->request->uri->getSegment(2);
         $data = [
             'barangs' => $barangModel->where('stok', 0)->paginate(10),
             'pager' => $barangModel->pager,

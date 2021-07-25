@@ -20,9 +20,6 @@ class Pengiriman extends Migration
 				'constraint' => 11,
 				'unsigned' => TRUE,
 			],
-			'resi' => [
-				'type' => 'TEXT'
-			],
 			'service' => [
 				'type' => 'TEXT',
 			],

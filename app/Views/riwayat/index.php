@@ -13,6 +13,8 @@
                 <th>Total</th>
                 <th>Tanggal</th>
                 <th>Status</th>
+                <th>Resi Pengiriman</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -35,11 +37,16 @@
                                 echo "Belum lunas";
                             } else {
                                 echo "Sudah lunas" ?>
-                                <a href="" class="btn btn-info mt-4" id="btn_back">Cek Resi</a>
                             <?php } ?>
-
                         </td>
-                    <?php endforeach ?>
+                        <!-- hanya barang yang sudah lunas dan memiliki resi yang ditampilkan -->
+                        <td><?php if ($transaksi->resi != null && $transaksi->status == 1) { ?>
+                                <?= $transaksi->resi; ?></td>
+                        <td>
+                            <a href="https://cekresi.com/?v=wi1&e=jne&noresi=<?= $transaksi->resi; ?>" class="btn btn-info" target="_blank">Cek</a>
+                        </td>
+                    <?php } ?>
+                <?php endforeach ?>
             </div>
         </tbody>
     </table>

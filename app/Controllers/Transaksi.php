@@ -115,10 +115,40 @@ class Transaksi extends BaseController
         //Close and output PDF document
         $pdf->Output($name, 'I');
     }
+    public function updateResi()
+    {
+        $id = $this->request->uri->getSegment(3);
+        $transaksiModel = new \App\Models\TransaksiModel();
+        $transaksi = $transaksiModel->find($id);
+
+        if ($transaksi->resi == null) {
+            $r = 'tambah resi';
+        } else {
+            $r = 'ubah';
+        }
+        $resi = $this->request->getPost('resi');
+        $data = [
+            'resi' => $resi,
+            'updated_by' => $this->session->get('id'),
+            'updated_date' => date("Y-m-d H:i:s")
+        ];
+        $transaksiModel->update($id, $data);
+        //logging
+        $logModel = new \App\Models\LogModel();
+        $l = new \App\Entities\Log();
+        $l->action = $r;
+        $l->table_name = 'transaksi';
+        $l->id_modified = $id;
+        $l->change_date = date("Y-m-d H:i:s");
+        $l->id_modifier = $this->session->get('id');
+        $l->keterangan = 'ubah resi';
+        $logModel->save($l);
+        return redirect()->to(site_url('transaksi/index'));
+    }
     public function updateStatusTransaksi()
     {
         $id = $this->request->uri->getSegment(3);
-        $from = $this->request->uri->getSegment(2);
+
         $transaksiModel = new \App\Models\TransaksiModel();
         $transaksi = $transaksiModel->find($id);
         $t = new \App\Entities\Transaksi();
@@ -143,6 +173,7 @@ class Transaksi extends BaseController
         $t->updated_date = date("Y-m-d H:i:s");
 
         $transaksiModel->save($t);
+        //logging
         $logModel = new \App\Models\LogModel();
         $l = new \App\Entities\Log();
         $l->action = 'update';
@@ -152,10 +183,6 @@ class Transaksi extends BaseController
         $l->id_modifier = $this->session->get('id');
         $l->keterangan = 'status transaksi';
         $logModel->save($l);
-        if ($from == 'updateStatusTransaksi') {
-            return redirect()->to(site_url('transaksi/belumLunas'));
-        } else {
-            return redirect()->to(site_url('transaksi/index'));
-        }
+        return redirect()->to(site_url('transaksi/index'));
     }
 }

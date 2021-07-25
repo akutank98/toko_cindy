@@ -44,7 +44,6 @@ $session = session();
                         <div class="dropdown-menu" aria-labelledby="dropdown01">
                             <a class="dropdown-item" href="<?= site_url('barang/index') ?>">List Barang</a>
                             <a class="dropdown-item" href="<?= site_url('barang/barangKosong') ?>">Barang Stok Kosong</a>
-                            <a class="dropdown-item" href="<?= site_url('barang/create') ?>">Tambah Barang</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">

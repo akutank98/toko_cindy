@@ -55,19 +55,37 @@ $submit = [
 
 <div class="container">
     <div class="row">
+        <?php
+        foreach ($detail as $index => $detail) {
+        }
+        ?>
         <div class="col-6">
             <div class="card">
                 <div class="card-body">
                     <img class="img-fluid" src="<?= base_url('uploads/' . $model->gambar) ?>" />
-                    <h1 class="text-success"><?= $model->nama ?></h1>
-                    <h4> Harga : <?= $model->harga ?></h4>
-                    <h4> Stok : <?= $model->stok ?></h4>
+                    <h1 style="font-size: ;" class="text-success"><?= $model->nama ?></h1>
+                    <h4 style="font-size: 2vw;"> Harga : <?= $model->harga ?></h4>
+                    <h4 style="font-size: 2vw;"> Stok : <?= $model->stok ?></h4>
+                    <?php if ($detail == null) : ?>
+                        <div class="text-body" style="font-size:2vw;">Berat : - gram</div>
+                        <div class="text-body" style="font-size:2vw;">Ukuran : - </div>
+                        <div class="text-body" style="font-size:2vw;">Deskripsi : </div>
+                        <p class="text-body" style="font-size:1.7vw;">Tidak ada deskripsi</p>
+                    <?php else : ?>
+                        <div class="text-body" style="font-size:2vw;">Berat : <?= $detail->berat; ?> gram</div>
+                        <div class="text-body" style="font-size:2vw;">Ukuran : <?= $detail->ukuran; ?> </div>
+                        <div class="text-body" style="font-size:2vw;">Deskripsi : </div>
+                        <p class="text-body" style="font-size:1.7vw;"><?= $detail->deskripsi; ?></p>
+                    <?php
+                        if ($detail == null) {
+                            $b = 500;
+                        }
+                    endif; ?>
                 </div>
             </div>
         </div>
         <div class="col-6">
             <h4>Pengiriman</h4>
-
             <div class="form-group">
                 <label for="provinsi">Pilih Provinsi</label>
                 <select class="form-control" id="provinsi" name="provinsi" id="provinsi">
@@ -158,9 +176,9 @@ $submit = [
 <script>
     $('document').ready(function() {
         var jumlah_pembelian = $("#jumlah").val();
-
+        var berat = <?php if ($detail == null) echo '500';
+                    else echo $detail->berat; ?>;
         var harga = <?= $model->harga ?>;
-        var ongkir = 0;
         $("#provinsi").on('change', function() {
             $("#kabupaten").empty();
             var id_province = $(this).val();
@@ -192,7 +210,7 @@ $submit = [
                 data: {
                     'origin': 492, //Tulungagung
                     'destination': id_city,
-                    'weight': 500,
+                    'weight': berat,
                     'courier': 'jne'
                 },
                 dataType: 'json',
@@ -221,9 +239,17 @@ $submit = [
         });
 
         $("#jumlah").on("change", function() {
-            jumlah_pembelian = $("#jumlah").val();
+            var max = <?= $model->stok ?>;
+            var min = 1;
+            if ($(this).val() > max) {
+                $(this).val(max);
+            } else if ($(this).val() < min) {
+                $(this).val(min);
+            }
 
+            jumlah_pembelian = $("#jumlah").val();
             var total_harga = (jumlah_pembelian * harga) + ongkir;
+            $("ongkir").val(ongkir);
             $("#total_harga").val(total_harga);
         });
     });

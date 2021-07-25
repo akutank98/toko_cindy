@@ -47,7 +47,11 @@ class Etalase extends BaseController
     {
         $id = $this->request->uri->getSegment(3);
         $modelBarang = new \App\Models\BarangModel();
+        $detailModel = new \App\Models\DetailBarangModel();
+        $detail = $detailModel->where('id_barang', $id)->first();
         $modelKomentar = new \App\Models\KomentarModel();
+        $detailModel = new \App\Models\DetailBarangModel();
+        $detail = $detailModel->where('id_barang', $id)->find();
         $komentar = $modelKomentar->where('id_barang', $id)->findAll();
         $model = $modelBarang->find($id);
         $provinsi = $this->rajaongkir('province');
@@ -82,6 +86,7 @@ class Etalase extends BaseController
             'model' => $model,
             'komentar' => $komentar,
             'provinsi' => json_decode($provinsi)->rajaongkir->results,
+            'detail' => $detail,
         ]);
     }
     public function getCity()
@@ -104,6 +109,14 @@ class Etalase extends BaseController
 
             return $this->response->setJSON($data);
         }
+    }
+    public function getWeight()
+    {
+        $id = $this->request->uri->getSegment(3);
+        $detailModel = new \App\Models\DetailBarangModel();
+        $detail = $detailModel->where('id_barang', $id);
+
+        return $detail;
     }
 
     private function rajaongkircost($origin, $destination, $weight, $courier)
