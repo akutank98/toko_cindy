@@ -20,9 +20,6 @@
         <tbody>
             <div class="container-fluid">
                 <?php
-
-                use App\Database\Migrations\transaksi;
-
                 foreach ($data['transaksiModel'] as $index => $transaksi) : ?>
                     <?php $id = $transaksi->id_transaksi ?>
                     <tr>

@@ -19,6 +19,7 @@
     <style>
         body {
             padding-top: 5rem;
+            padding-bottom: 20vh;
         }
 
         .starter-template {
@@ -29,7 +30,6 @@
 </head>
 
 <body>
-
     <?= $this->include('navbar'); ?>
 
     <main role="main" class="container" style="height: 90vh;">

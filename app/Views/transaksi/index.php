@@ -6,7 +6,7 @@
 		<h1>Transaksi</h1>
 	</div>
 	<form class="d-flex mb-3" role="form" action="<?= site_url('transaksi/search'); ?>" method="post">
-		<input class="form-control me-2" name="id" type="search" placeholder="Cari Barang" aria-label="Search">
+		<input class="form-control me-2" name="id" type="search" placeholder="Cari Transaksi (ID)" aria-label="Search">
 		<button type="submit" class="btn btn-info">Search</button>
 	</form>
 </div>

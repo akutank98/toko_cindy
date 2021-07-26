@@ -4,7 +4,9 @@
         text-align: center;
         padding: 10px 0;
         position: fixed;
+        top: 85vh;
         width: 100%;
+        max-height: 15vh;
         bottom: 0;
     }
 
