@@ -76,98 +76,101 @@ $submit = [
                         <div class="text-body" style="font-size:1.1rem;">Ukuran : <?= $detail->ukuran; ?> </div>
                         <div class="text-body" style="font-size:1.1rem;">Deskripsi : </div>
                         <p class="text-body" style="font-size:1.1rem;"><?= $detail->deskripsi; ?></p>
-                    <?php
-                        if ($detail == null) {
-                            $b = 500;
-                        }
-                    endif; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
+
         <div class="col-6">
             <h4>Pengiriman</h4>
-            <div class="form-group">
-                <label for="provinsi">Pilih Provinsi</label>
-                <select class="form-control" id="provinsi" name="provinsi" id="provinsi">
-                    <option>Select Provinsi</option>
-                    <?php foreach ($provinsi as $p) : ?>
-                        <option value="<?= $p->province_id ?>"><?= $p->province ?></option>
-                    <?php endforeach ?>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="kabupaten">Pilih Kabupaten/Kota</label>
-                <select class="form-control" id="kabupaten" name="kabupaten">
-                    <option>Pilih Kabupaten/kota</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="service">Pilih Service</label>
-                <select class="form-control" id="service">
-                    <option>Select Service</option>
-                </select>
-            </div>
-
-            <strong>Estimasi : <span id="estimasi"></span></strong>
-            <hr>
-            <?= form_open('Etalase/beli') ?>
-            <?= form_input($id_barang) ?>
-            <?= form_input($id_pembeli) ?>
-            <div class="form-group">
-                <?= form_label('Jumlah Pembelian', 'jumlah') ?>
-                <?= form_input($jumlah) ?>
-            </div>
-            <div class="form-group">
-                <?= form_label('Ongkir', 'ongkir') ?>
-                <?= form_input($ongkir) ?>
-            </div>
-            <div class="form-group">
-                <?= form_label('Total Harga', 'total_harga') ?>
-                <?= form_input($total_harga) ?>
-            </div>
-            <div class="form-group">
-                <?= form_label('Alamat', 'alamat') ?>
-                <?= form_input($alamat) ?>
-            </div>
-            <div class="text-right">
-                <?= form_submit($submit) ?>
-            </div>
-            <?= form_close() ?>
-        </div>
-    </div>
-    <div class="row mb-3 mt-3">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Komentar</h4>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <a href="<?= site_url('Komentar/create/' . $model->id_barang) ?>" class="btn btn-link">Tinggalkan Komentar</a>
-                        </div>
-                    </div>
+            <form action="" method="POST">
+                <div class="form-group">
+                    <label for="provinsi">Pilih Provinsi</label>
+                    <select class="form-control" id="provinsi" name="provinsi" id="provinsi">
+                        <option>Select Provinsi</option>
+                        <?php foreach ($provinsi as $p) : ?>
+                            <option value="<?= $p->province_id ?>"><?= $p->province ?></option>
+                        <?php endforeach ?>
+                    </select>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <?php foreach ($komentar as $k) : ?>
-                                <?php
-                                $modelUser = new \App\Models\UserModel();
-                                $namaUser = $modelUser->find($k->id_user)->username;
-                                ?>
-                                <strong><?= $namaUser ?></strong>
-                                <br>
-                                <?= $k->komentar ?>
-                                <hr>
-                            <?php endforeach ?>
-                        </div>
+
+                <div class="form-group">
+                    <label for="kabupaten">Pilih Kabupaten/Kota</label>
+                    <select class="form-control" id="kabupaten" name="kabupaten">
+                        <option>Pilih Kabupaten/kota</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="service">Pilih Service</label>
+                    <select class="form-control" id="service">
+                        <option>Select Service</option>
+                    </select>
+            </form>
+        </div>
+
+
+        <strong>Estimasi : <span id="estimasi"></span></strong>
+        <hr>
+        <?= form_open('etalase/beli') ?>
+        <?= form_input($id_barang) ?>
+        <?= form_input($id_pembeli) ?>
+        <div class="form-group">
+            <?= form_label('Jumlah Pembelian', 'jumlah') ?>
+            <?= form_input($jumlah) ?>
+        </div>
+        <div class="form-group">
+            <?= form_label('Ongkir', 'ongkir') ?>
+            <?= form_input($ongkir) ?>
+        </div>
+        <div class="form-group">
+            <?= form_label('Total Harga', 'total_harga') ?>
+            <?= form_input($total_harga) ?>
+        </div>
+        <div class="form-group">
+            <?= form_label('Alamat', 'alamat') ?>
+            <?= form_input($alamat) ?>
+        </div>
+        <div class="text-right">
+            <?= form_submit($submit) ?>
+        </div>
+        <input type="hidden" name="provinsi" id="hProv">
+        <input type="hidden" name="kabupaten" id="hKab">
+        <input type="hidden" name="service" id="hService">
+        <?= form_close() ?>
+    </div>
+</div>
+<div class="row mb-3 mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Komentar</h4>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a href="<?= site_url('Komentar/create/' . $model->id_barang) ?>" class="btn btn-link">Tinggalkan Komentar</a>
                     </div>
                 </div>
             </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php foreach ($komentar as $k) : ?>
+                            <?php
+                            $modelUser = new \App\Models\UserModel();
+                            $namaUser = $modelUser->find($k->id_user)->username;
+                            ?>
+                            <strong><?= $namaUser ?></strong>
+                            <br>
+                            <?= $k->komentar ?>
+                            <hr>
+                        <?php endforeach ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 </div>
 
 
@@ -181,6 +184,7 @@ $submit = [
         var harga = <?= $model->harga ?>;
         $("#provinsi").on('change', function() {
             $("#kabupaten").empty();
+            $("#service").empty();
             var id_province = $(this).val();
             $.ajax({
                 url: "<?= site_url('etalase/getcity') ?>",
@@ -200,9 +204,12 @@ $submit = [
                     }
                 },
             });
+            var selectedTextP = $(this).find("option:selected").text();
+            $("#hProv").val(selectedTextP);
         });
 
         $("#kabupaten").on('change', function() {
+            $("#service").empty();
             var id_city = $(this).val();
             $.ajax({
                 url: "<?= site_url('etalase/getcost') ?>",
@@ -216,6 +223,7 @@ $submit = [
                 dataType: 'json',
                 success: function(data) {
                     var results = data["rajaongkir"]["results"][0]["costs"];
+
                     for (var i = 0; i < results.length; i++) {
                         var text = results[i]["description"] + "(" + results[i]["service"] + ")";
                         $("#service").append($('<option>', {
@@ -225,17 +233,21 @@ $submit = [
                         }));
                     }
                 },
-
             });
+            var selectedTextK = $(this).find("option:selected").text();
+            $("#hKab").val(selectedTextK);
         });
 
         $("#service").on('change', function() {
             var estimasi = $('option:selected', this).attr('etd');
+
             ongkir = parseInt($(this).val());
             $("#ongkir").val(ongkir);
             $("#estimasi").html(estimasi + " Hari");
             var total_harga = (jumlah_pembelian * harga) + ongkir;
             $("#total_harga").val(total_harga);
+            var selectedTextS = $(this).find("option:selected").text();
+            $("#hService").val(selectedTextS);
         });
 
         $("#jumlah").on("change", function() {
@@ -246,7 +258,6 @@ $submit = [
             } else if ($(this).val() < min) {
                 $(this).val(min);
             }
-
             $("ongkir").val(ongkir);
             console.log(berat);
             jumlah_pembelian = $("#jumlah").val();

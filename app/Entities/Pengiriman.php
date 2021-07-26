@@ -4,6 +4,6 @@ namespace App\Entities;
 
 use CodeIgniter\Entity;
 
-class Transaksi extends Entity
+class Pengiriman extends Entity
 {
 }

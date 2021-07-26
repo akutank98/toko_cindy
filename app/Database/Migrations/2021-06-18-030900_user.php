@@ -32,7 +32,7 @@ class user extends Migration
             'role' => [
                 'type' => 'INT',
                 'constraint' => 1,
-                'default' => 1,
+                'default' => 2,
             ],
             'created_by' => [
                 'type' => 'INT',

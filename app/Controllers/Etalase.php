@@ -73,11 +73,27 @@ class Etalase extends BaseController
                 $entityBarang->stok = $barang->stok - $jumlah_pembelian;
                 $barangModel->save($entityBarang);
                 $transaksi->fill($data);
+                $transaksi->alamat .=
+                    ', ' . $this->request->getPost('provinsi') .
+                    ', ' . $this->request->getPost('kabupaten');
                 $transaksi->status = 0;
                 $transaksi->created_by = $this->session->get('id');
                 $transaksi->created_date = date("Y-m-d H:i:s");
                 $transaksiModel->save($transaksi);
                 $id = $transaksiModel->insertID();
+
+                // input pengiriman
+                $pengirimanModel = new \App\Models\PengirimanModel();
+                $pengiriman = new \App\Entities\Pengiriman();
+                $pengiriman->id_transaksi = $id;
+                $pengiriman->service = $this->request->getPost('service');
+                $pengiriman->tujuan = $transaksi->alamat;
+                $pengiriman->status = 0;
+                $pengiriman->created_by = $this->session->get('id');
+                $pengiriman->created_date = date("Y-m-d H:i:s");
+                $pengirimanModel->save($pengiriman);
+
+                //return
                 $segment = ['transaksi', 'view', $id];
                 return redirect()->to(site_url($segment));
             }
