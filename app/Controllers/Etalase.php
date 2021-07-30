@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+
 class Etalase extends BaseController
 {
     private $url = "https://api.rajaongkir.com/starter/";
@@ -18,7 +19,9 @@ class Etalase extends BaseController
         $barangModel = new \App\Models\BarangModel();
 
         $data = [
-            'model' => $barangModel->paginate(12),
+            'model' => $barangModel
+                ->where('stok >', 0)
+                ->paginate(12),
             'pager' => $barangModel->pager,
         ];
 
@@ -31,7 +34,7 @@ class Etalase extends BaseController
         $barangModel = new \App\Models\BarangModel();
 
         if (isset($_POST)) {
-            $barang = $_POST['nama_barang'];
+            $barang = $_POST['barang'];
         }
         $data = [
             'model' => $barangModel->like('nama', $barang)
@@ -43,15 +46,18 @@ class Etalase extends BaseController
             'data' => $data,
         ]);
     }
+
+    public function cart()
+    {
+
+        return view('etalase/cart');
+    }
+
     public function beli()
     {
         $id = $this->request->uri->getSegment(3);
         $modelBarang = new \App\Models\BarangModel();
-        $detailModel = new \App\Models\DetailBarangModel();
-        $detail = $detailModel->where('id_barang', $id)->first();
-        $modelKomentar = new \App\Models\KomentarModel();
-        $detailModel = new \App\Models\DetailBarangModel();
-        $detail = $detailModel->where('id_barang', $id)->find();
+
         $model = $modelBarang->find($id);
         $provinsi = $this->rajaongkir('province');
 
@@ -65,33 +71,24 @@ class Etalase extends BaseController
                 $transaksi = new \App\Entities\Transaksi();
                 $barangModel = new \App\Models\BarangModel();
                 $id_barang = $this->request->getPost('id_barang');
-                $jumlah_pembelian = $this->request->getPost('jumlah');
-                $barang = $barangModel->find($id_barang);
                 $entityBarang = new \App\Entities\Barang();
+                $jumlah_pembelian = $this->request->getPost('jumlah');
+
+                $barang = $barangModel->find($id_barang);
                 $entityBarang->id_barang = $id_barang;
                 $entityBarang->stok = $barang->stok - $jumlah_pembelian;
                 $barangModel->save($entityBarang);
                 $transaksi->fill($data);
                 $transaksi->alamat .=
-                    ', ' . $this->request->getPost('provinsi') .
-                    ', ' . $this->request->getPost('kabupaten');
+                    ', ' . $this->request->getPost('kabupaten') .
+                    ', ' . $this->request->getPost('provinsi');
                 $transaksi->status = 0;
+                $transaksi->service = $this->request->getPost('service');
                 $transaksi->created_by = $this->session->get('id');
                 $transaksi->created_date = date("Y-m-d H:i:s");
                 $transaksiModel->save($transaksi);
                 $id = $transaksiModel->insertID();
-
-                // input pengiriman
-                $pengirimanModel = new \App\Models\PengirimanModel();
-                $pengiriman = new \App\Entities\Pengiriman();
-                $pengiriman->id_transaksi = $id;
-                $pengiriman->service = $this->request->getPost('service');
-                $pengiriman->tujuan = $transaksi->alamat;
-                $pengiriman->status = 0;
-                $pengiriman->created_by = $this->session->get('id');
-                $pengiriman->created_date = date("Y-m-d H:i:s");
-                $pengirimanModel->save($pengiriman);
-
+                dd($transaksi);
                 //return
                 $segment = ['transaksi', 'view', $id];
                 return redirect()->to(site_url($segment));
@@ -100,7 +97,6 @@ class Etalase extends BaseController
         return view('etalase/beli', [
             'model' => $model,
             'provinsi' => json_decode($provinsi)->rajaongkir->results,
-            'detail' => $detail,
         ]);
     }
     public function getCity()

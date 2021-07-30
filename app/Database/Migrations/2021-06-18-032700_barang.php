@@ -28,6 +28,19 @@ class Barang extends \CodeIgniter\Database\Migration
             'gambar' => [
                 'type' => 'TEXT',
             ],
+            'ukuran' => [
+                'type' => 'TEXT',
+                'null' => true
+            ],
+            'berat' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'default' => 500
+            ],
+            'deskripsi' => [
+                'type' => 'TEXT',
+                'null' => true
+            ],
             'created_by' => [
                 'type' => 'INT',
                 'constraint' => 11,
@@ -43,7 +56,11 @@ class Barang extends \CodeIgniter\Database\Migration
             'updated_date' => [
                 'type' => 'DATETIME',
                 'null' => TRUE,
-            ]
+            ],
+            'barang_deleted' => [
+                'type' => 'DATETIME',
+                'null' => TRUE,
+            ],
         ]);
 
         $this->forge->addKey('id_barang', TRUE);

@@ -44,7 +44,11 @@ class Pengiriman extends Migration
 			'updated_date' => [
 				'type' => 'DATETIME',
 				'null' => TRUE,
-			]
+			],
+			'pengiriman_deleted' => [
+				'type' => 'DATETIME',
+				'null' => TRUE,
+			],
 		]);
 
 		$this->forge->addKey('id_pengiriman', TRUE);

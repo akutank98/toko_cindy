@@ -19,6 +19,8 @@ class Barang extends BaseController
             'barangs' => $barangModel->paginate(10),
             'pager' => $barangModel->pager,
         ];
+
+
         return view('barang/index', [
             'data' => $data,
         ]);
@@ -45,60 +47,55 @@ class Barang extends BaseController
         $id_barang = $this->request->uri->getSegment(3);
 
         $barangModel = new \App\Models\BarangModel();
-        $deskripsiModel = new \App\Models\DetailBarangModel();
-        $des = $deskripsiModel->where('id_barang', $id_barang)->first();
-
         $barang = $barangModel->find($id_barang);
 
         return view('barang/view', [
             'barang' => $barang,
-            'des' => $des,
         ]);
     }
-    public function deskripsi()
-    {
-        $id_barang = $this->request->uri->getSegment(3);
-        $deskripsiModel = new \App\Models\DetailBarangModel();
-        $entityDes = new \App\Entities\DetailBarang();
-        $barangModel = new \App\Models\BarangModel();
-        $barang = $barangModel->find($id_barang);
+    // public function deskripsi()
+    // {
+    //     $id_barang = $this->request->uri->getSegment(3);
+    //     $deskripsiModel = new \App\Models\DetailBarangModel();
+    //     $entityDes = new \App\Entities\DetailBarang();
+    //     $barangModel = new \App\Models\BarangModel();
+    //     $barang = $barangModel->find($id_barang);
 
-        if ($this->request->getPost()) {
-            $errors = $this->validation->getErrors();
-            $data = $this->request->getPost();
-            $entityDes->fill($data);
-            $entityDes->id_barang = $id_barang;
-            $this->validation->run($data, 'deskripsi');
+    //     if ($this->request->getPost()) {
+    //         $errors = $this->validation->getErrors();
+    //         $data = $this->request->getPost();
+    //         $entityDes->fill($data);
+    //         $entityDes->id_barang = $id_barang;
+    //         $this->validation->run($data, 'deskripsi');
+    //         if (!$errors) {
+    //             $entityDes->fill($data);
 
-            if (!$errors) {
-                $entityDes->fill($data);
+    //             $entityDes->created_by = $this->session->get('id');
+    //             $entityDes->created_date = date("Y-m-d H:i:s");
+    //             $deskripsiModel->save($entityDes);
+    //             $segments = ['barang', 'view', $id_barang];
 
-                $entityDes->created_by = $this->session->get('id');
-                $entityDes->created_date = date("Y-m-d H:i:s");
-                $deskripsiModel->save($entityDes);
-                $segments = ['barang', 'view', $id_barang];
+    //             // logging
+    //             $logModel = new \App\Models\LogModel();
+    //             $l = new \App\Entities\Log();
+    //             $l->action = 'create';
+    //             $l->table_name = 'detail_barang';
+    //             $l->id_modified = $deskripsiModel->insertID();
+    //             $l->change_date = date("Y-m-d H:i:s");
+    //             $l->id_modifier = $this->session->get('id');
+    //             $logModel->save($l);
 
-                // logging
-                $logModel = new \App\Models\LogModel();
-                $l = new \App\Entities\Log();
-                $l->action = 'create';
-                $l->table_name = 'detail_barang';
-                $l->id_modified = $deskripsiModel->insertID();
-                $l->change_date = date("Y-m-d H:i:s");
-                $l->id_modifier = $this->session->get('id');
-                $logModel->save($l);
-
-                return redirect()->to(site_url($segments));
-            } else {
-                $this->session->setFlashdata('errors_createDeskripsi', $errors);
-            }
-        } else {
-            return view('barang/createDeskripsi', [
-                'barang' => $barang,
-                $id_barang,
-            ]);
-        }
-    }
+    //             return redirect()->to(site_url($segments));
+    //         } else {
+    //             $this->session->setFlashdata('errors_createDeskripsi', $errors);
+    //         }
+    //     } else {
+    //         return view('barang/createDeskripsi', [
+    //             'barang' => $barang,
+    //             $id_barang,
+    //         ]);
+    //     }
+    // }
 
     public function create()
     {
@@ -123,7 +120,7 @@ class Barang extends BaseController
                 // logging
                 $logModel = new \App\Models\LogModel();
                 $l = new \App\Entities\Log();
-                $l->action = 'delete';
+                $l->action = 'create';
                 $l->table_name = 'barang';
                 $l->id_modified = $id_barang;
                 $l->change_date = date("Y-m-d H:i:s");
@@ -209,10 +206,9 @@ class Barang extends BaseController
     public function updateDeskripsi()
     {
         $id_barang = $this->request->uri->getSegment(3);
-        $deskripsiModel = new \App\Models\DetailBarangModel();
         $barangModel = new \App\Models\BarangModel();
         $barang = $barangModel->find($id_barang);
-        $deskripsi = $deskripsiModel->where('id_barang', $id_barang)->first();
+
 
         if ($this->request->getPost()) {
             $data = $this->request->getPost();
@@ -220,23 +216,22 @@ class Barang extends BaseController
             $errors = $this->validation->getErrors();
 
             if (!$errors) {
-                $d = new \App\Entities\DetailBarang();
+                $d = new \App\Entities\Barang();
                 $d->id_barang = $id_barang;
 
                 $d->fill($data);
                 $d->updated_by = $this->session->get('id');
                 $d->updated_date = date("Y-m-d H:i:s");
-                $d->id_detail = $deskripsi->id_detail;
+                $barangModel->save($d);
 
-                $deskripsiModel->save($d);
                 $segments = ['Barang', 'view', $id_barang];
 
                 // logging
                 $logModel = new \App\Models\LogModel();
                 $l = new \App\Entities\Log();
                 $l->action = 'update';
-                $l->table_name = 'detail_barang';
-                $l->id_modified = $deskripsi->id_detail;
+                $l->table_name = 'barang';
+                $l->id_modified = $barang->id_barang;
                 $l->change_date = date("Y-m-d H:i:s");
                 $l->id_modifier = $this->session->get('id');
                 $logModel->save($l);
@@ -248,7 +243,6 @@ class Barang extends BaseController
 
 
         return view('barang/updateDeskripsi', [
-            'des' => $deskripsi,
             'barang' => $barang,
         ]);
     }
@@ -280,7 +274,6 @@ class Barang extends BaseController
     public function barangKosong()
     {
         $barangModel = new \App\Models\BarangModel();
-        $from = $this->request->uri->getSegment(2);
         $data = [
             'barangs' => $barangModel->where('stok', 0)->paginate(10),
             'pager' => $barangModel->pager,

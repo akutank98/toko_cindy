@@ -7,7 +7,8 @@
             <h1>User</h1>
         </div>
         <form class="d-flex mb-3" role="form" action="<?= site_url('user/search'); ?>" method="post">
-            <input class="form-control me-2" name="username" type="search" placeholder="Cari Barang" aria-label="Search">
+            <?= csrf_field(); ?>
+            <input class="form-control me-2" name="username" type="search" placeholder="Cari User" aria-label="Search">
             <button type="submit" class="btn btn-info">Search</button>
         </form>
     </div>

@@ -5,7 +5,8 @@
 	<div>
 		<h1>Transaksi</h1>
 	</div>
-	<form class="d-flex mb-3" role="form" action="<?= site_url('transaksi/search'); ?>" method="post">
+	<form class="d-flex mb-3" role="form" action="<?= site_url('Transaksi/search');  ?>" method="post">
+		<?= csrf_field(); ?>
 		<input class="form-control me-2" name="id" type="search" placeholder="Cari Transaksi (ID)" aria-label="Search">
 		<button type="submit" class="btn btn-info">Search</button>
 	</form>
@@ -14,10 +15,12 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th>ID</th>
+				<th>ID Transaksi</th>
+				<th>ID Barang</th>
 				<th>Barang</th>
 				<th>Pembeli</th>
 				<th>Alamat</th>
+				<th>Service</th>
 				<th>Jumlah</th>
 				<th>Total</th>
 				<th>Status</th>
@@ -25,40 +28,56 @@
 			</tr>
 		</thead>
 		<tbody>
-
 			<?php foreach ($data['model'] as $index => $transaksi) : ?>
+				<?php
+				$color = 'background-color: transparent;';
+				if ($transaksi->status == 0) {
+					$color = 'background-color: whitesmoke;';
+				} elseif ($transaksi->status == 1 && $transaksi->resi == null) {
+					$color = 'background-color: lightyellow;';
+				} elseif ($transaksi->status == 1 && $transaksi->resi != null) {
+					$color = 'background-color: lightblue;';
+				}
+				?>
+				<!-- init modal value -->
 				<div class="modal fade" id="exampleModalResi<?= $transaksi->id_transaksi; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
 								<h5 class="modal-title" id="exampleModalLabel">
-									Masukkan resi transaksi
+									Detail Pengiriman
 								</h5>
 							</div>
 							<form action="/transaksi/updateresi/<?= $transaksi->id_transaksi; ?>" method="post">
 								<?= csrf_field() ?>
 								<div class="modal-body">
 									<label class="form-label-group" for="resi">Resi : </label>
-									<input class="form-control" name="resi" id="<?= 'resi' . $transaksi->id_transaksi; ?>" value="<?= $transaksi->resi; ?>" type="number">
+									<input class="form-control" name="resi" id="<?= 'resi' . $transaksi->id_transaksi; ?>" value="<?= $transaksi->resi; ?>" <?php if ($transaksi->status == 1 && $transaksi->resi != null) echo 'readonly'; ?> type="text">
 								</div>
+								<?php if ($transaksi->status == 1 && $transaksi->resi != null) {
+									$display = 'none';
+								} else {
+									$display = 'block';
+								} ?>
 								<div class=" modal-footer">
 									<button onclick="document.getElementById('<?= 'stok' . $transaksi->id_transaksi; ?>').value = <?= $transaksi->resi; ?>" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-									<button type="submit" class="btn btn-info">Simpan</button>
+									<button type="submit" style="display: <?= $display; ?>;" class="btn btn-info">Simpan</button>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
 				<?php $id = $transaksi->id_transaksi ?>
-				<tr>
+				<tr style="<?= $color; ?>">
 					<td><?= $transaksi->id_transaksi; ?></td>
 					<td><?= $transaksi->id_barang; ?></td>
+					<td><?= $transaksi->nama; ?></td>
 					<td><?= $transaksi->id_pembeli; ?></td>
 					<td><?= $transaksi->alamat; ?></td>
+					<td><?= $transaksi->service; ?></td>
 					<td><?= $transaksi->jumlah; ?></td>
 					<td><?= $transaksi->total_harga; ?></td>
 					<td>
-
 						<?php
 						if ($transaksi->status == 0) {
 							echo 'Belum lunas ';
@@ -67,10 +86,11 @@
 						}
 						?>
 						<!-- modal button-->
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal<?= $transaksi->id_transaksi; ?>">
-							Ubah
-						</button>
-
+						<?php if (session()->get('role') == 0 && $transaksi->status == 0) { ?>
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal<?= $transaksi->id_transaksi; ?>">
+								Ubah
+							</button>
+						<?php } ?>
 						<!-- Modal -->
 						<div class="modal fade" id="exampleModal<?= $transaksi->id_transaksi; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog" role="document">
@@ -90,14 +110,12 @@
 							</div>
 						</div>
 					</td>
-					<td>
-						<a href="<?= site_url('transaksi/view/' . $transaksi->id_transaksi) ?>" class="btn btn-info">View</a>
-						<a href=" <?= site_url('transaksi/downloadInvoice/' . $transaksi->id_transaksi) ?>" class="btn btn-primary" target="_blank">Download</a>
-						<!-- hanya transaksi yang sudah lunas yang dapat ditambah / diubah resi -->
+					<td class="d-inline-flex">
+						<!-- hanya transaksi yang sudah lunas yang dapat ditambah / dilihat resi dan download invoice -->
 						<?php if ($transaksi->status == 1) {  ?>
-							<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalResi<?= $transaksi->id_transaksi; ?>">Resi</button>
+							<a href=" <?= site_url('transaksi/downloadInvoice/' . $transaksi->id_transaksi) ?>" class="btn btn-primary" target="_blank">Download</a>
+							<button type="button" class="btn btn-warning ml-1" data-toggle="modal" data-target="#exampleModalResi<?= $transaksi->id_transaksi; ?>">Resi</button>
 						<?php } ?>
-
 					</td>
 				</tr>
 			<?php endforeach ?>

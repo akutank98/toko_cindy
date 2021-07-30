@@ -97,7 +97,13 @@ class Validation
 		],
 		'gambar' => [
 			'rules' => 'uploaded[gambar]|max_size[gambar,8192]|is_image[gambar]|mime_in[gambar,image/jpg,image/png,image/jpeg]',
-		]
+		],
+		'ukuran' => [
+			'rules' => 'required'
+		],
+		'berat' => [
+			'rules' => 'is_natural'
+		],
 	];
 
 	public $barang_errors = [
@@ -163,23 +169,17 @@ class Validation
 		'alamat' => [
 			'rules' => 'required',
 		],
+		'service' => [
+			'rules' => 'required'
+		],
 		'ongkir' => [
 			'rules' => 'required',
 		]
 	];
-	public $komentar = [
-		'komentar' => [
-			'rules' => 'required',
-		],
-	];
-	public $komentar_errors = [
-		'komentar' => [
-			'required' => '{field} Harus diisi',
-		],
-	];
+
 	public $deskripsi = [
-		'id_barang' => 'required|unique',
 		'ukuran' => 'required',
+		'berat' => 'is_natural',
 	];
 	public $deskripsiUpdate = [
 		'ukuran' => 'required',

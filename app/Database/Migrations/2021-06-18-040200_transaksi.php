@@ -56,7 +56,11 @@ class transaksi extends Migration
             'updated_date' => [
                 'type' => 'DATETIME',
                 'null' => TRUE,
-            ]
+            ],
+            'transaksi_deleted' => [
+                'type' => 'DATETIME',
+                'null' => TRUE,
+            ],
         ]);
 
         $this->forge->addKey('id_transaksi', TRUE);

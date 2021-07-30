@@ -49,7 +49,11 @@ class user extends Migration
             'updated_date' => [
                 'type' => 'DATETIME',
                 'null' => TRUE,
-            ]
+            ],
+            'user_deleted' => [
+                'type' => 'DATETIME',
+                'null' => TRUE,
+            ],
         ]);
 
         $this->forge->addKey('id_user', TRUE);

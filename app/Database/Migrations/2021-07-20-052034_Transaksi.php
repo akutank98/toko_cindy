@@ -45,6 +45,13 @@ class Transaksi extends Migration
 				'type' => 'INT',
 				'constraint' => 11,
 			],
+			'service' => [
+				'type' => 'TEXT'
+			],
+			'sampai' => [
+				'type' => 'INT',
+				'constraint' => 1,
+			],
 			'resi' => [
 				'type' => 'TEXT'
 			],
@@ -61,6 +68,10 @@ class Transaksi extends Migration
 				'null' => TRUE,
 			],
 			'updated_date' => [
+				'type' => 'DATETIME',
+				'null' => TRUE,
+			],
+			'transaksi_deleted' => [
 				'type' => 'DATETIME',
 				'null' => TRUE,
 			]

@@ -1,9 +1,29 @@
 <?php
 $session = session();
 ?>
+<style>
+    .buttonLogout {
+        transition: all .5s ease;
+        color: #fff;
+        border: 3px solid white;
+        text-transform: uppercase;
+        text-align: center;
+        line-height: 1;
+        font-size: .75em;
+        background-color: transparent;
+        padding: 8px;
+        outline: none;
+        border-radius: 4px;
+    }
+
+    .buttonLogout:hover {
+        color: #001F3F;
+        background-color: #fff;
+    }
+</style>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: palevioletred;">
-    <a class="navbar-brand" href="<?= site_url('home/index') ?>">Toko Cindy</a>
+    <button class="navbar-brand btn-outline-light disabled" style="box-shadow: none;background-color: transparent;text-decoration-color: white; border:none">Toko Cindy</button>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -27,39 +47,44 @@ $session = session();
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Transaksi</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown02">
-                            <a class="dropdown-item" href="<?= site_url('transaksi/index') ?>">Semua Transaksi</a>
-                            <a class="dropdown-item" href="<?= site_url('transaksi/belumLunas') ?>">Belum Lunas</a>
+                            <a class="dropdown-item" href="<?= site_url('Transaksi/index') ?>">Semua Transaksi</a>
+                            <a class="dropdown-item" href="<?= site_url('Transaksi/sudahLunas') ?>">Sudah Lunas</a>
+                            <a class="dropdown-item" href="<?= site_url('Transaksi/belumLunas') ?>">Belum Lunas</a>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= site_url('user/index') ?>">User</a>
+                        <a class="nav-link" href="<?= site_url('User/index') ?>">User</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= site_url('log/index') ?>">Log</a>
+                        <a class="nav-link" href="<?= site_url('Log/index') ?>">Log</a>
                     </li>
                     <!-- admin -->
                 <?php elseif (session()->get('role') == 1) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Barang</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="<?= site_url('barang/index') ?>">List Barang</a>
-                            <a class="dropdown-item" href="<?= site_url('barang/barangKosong') ?>">Barang Stok Kosong</a>
+                            <a class="dropdown-item" href="<?= site_url('Barang/index') ?>">List Barang</a>
+                            <a class="dropdown-item" href="<?= site_url('Barang/barangKosong') ?>">Barang Stok Kosong</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Transaksi</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown02">
-                            <a class="dropdown-item" href="<?= site_url('transaksi/index') ?>">Semua Transaksi</a>
-                            <a class="dropdown-item" href="<?= site_url('transaksi/belumLunas') ?>">Belum Lunas</a>
+                            <a class="dropdown-item" href="<?= site_url('Transaksi/index') ?>">Semua Transaksi</a>
+                            <a class="dropdown-item" href="<?= site_url('Transaksi/sudahLunas') ?>">Sudah Lunas</a>
+                            <a class="dropdown-item" href="<?= site_url('Transaksi/belumLunas') ?>">Belum Lunas</a>
                         </div>
                     </li>
                     <!-- user -->
                 <?php else : ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= site_url('etalase/index') ?>">Etalase</a>
+                        <a class="nav-link" href="<?= site_url('Etalase/index') ?>">Etalase</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= site_url('riwayat/index') ?>">Riwayat</a>
+                        <a class="nav-link" href="<?= site_url('Riwayat/index') ?>">Riwayat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= site_url('Auth/caraBelanja') ?>">Panduan Pengguna</a>
                     </li>
                 <?php endif ?>
             </ul>
@@ -67,15 +92,13 @@ $session = session();
         <div class="form-inline my-2 my-lg-0 ml-auto">
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($session->get('isLoggedIn')) : ?>
+                    <?php if (session()->get('role') == 2) : ?>
+                        <li class="nav-item">
+                            <a href="<?= site_url('Etalase/cart') ?>" class="btn mr-3" href="">&#x1f6d2;</a>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item">
-                        <a class="btn btn-success" href="<?= site_url('auth/logout') ?>">Logout</a>
-                    </li>
-                <?php else : ?>
-                    <li class="nav-item" style="margin:0 1px 1px 1px">
-                        <a class="btn btn-success" href="<?= site_url('auth/login') ?>">Login</a>
-                    </li>
-                    <li class="nav-item" style="margin:0 1px 1px 1px">
-                        <a class="btn btn-success" href="<?= site_url('auth/register') ?>">Daftar</a>
+                        <a class="btn-outline-light buttonLogout" style="text-decoration: none;" href="<?= site_url('Auth/logout') ?>">Logout</a>
                     </li>
                 <?php endif ?>
             </ul>

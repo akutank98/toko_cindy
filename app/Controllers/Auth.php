@@ -82,6 +82,11 @@ class Auth extends BaseController
 
         return view('login');
     }
+    public function caraBelanja()
+    {
+        return view('panduan/caraBelanja');
+    }
+
     public function logout()
     {
         $this->session->destroy();

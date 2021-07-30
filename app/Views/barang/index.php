@@ -6,6 +6,7 @@
 			<h1>Barang</h1>
 		</div>
 		<form class="d-flex mb-3" role="form" action="<?= site_url('barang/search'); ?>" method="post">
+			<?= csrf_field(); ?>
 			<input class="form-control me-2" name="barang" type="search" placeholder="Cari Barang" aria-label="Search">
 			<button type="submit" class="btn btn-info">Search</button>
 		</form>
@@ -43,7 +44,13 @@
 								</form>
 							</div>
 						</div>
-						<tr>
+						<?php
+						if ($barang->stok == 0) {
+							$bcolor = 'background-color: beige;';
+						} else {
+							$bcolor = 'background-color: transparent;';
+						} ?>
+						<tr style="<?= $bcolor; ?>">
 							<th scope="row"><?= $barang->id_barang ?></th>
 							<td><?= $barang->nama ?></td>
 							<td>
@@ -56,11 +63,15 @@
 								<!-- hanya owner yang dapat update dan delete data -->
 								<?php if (session()->get('role') == 0) : ?>
 									<a href="<?= site_url('barang/update/' . $barang->id_barang) ?>" class="btn btn-success">Update</a>
-									<!-- modal trigger button-->
+									<!-- modal trigger button owner-->
+									<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalStok<?= $barang->id_barang; ?>">
+										Ubah Stok
+									</button>
 									<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal<?= $barang->id_barang; ?>">
 										Hapus
 									</button>
 								<?php elseif (session()->get('role') == 1) : ?>
+									<!-- modal trigger button admin -->
 									<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalStok<?= $barang->id_barang; ?>">
 										Ubah Stok
 									</button>
@@ -88,7 +99,7 @@
 								</div>
 							</td>
 						</tr>
-					<?php endforeach ?>
+					<?php endforeach; ?>
 			</tbody>
 		</table>
 	</div>

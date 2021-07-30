@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Database\Migrations\transaksi as MigrationsTransaksi;
-use Exception;
 use TCPDF;
 
 class Transaksi extends BaseController
@@ -33,12 +31,13 @@ class Transaksi extends BaseController
     public function index()
     {
         $transaksiModel = new \App\Models\transaksiModel();
-
         $data = [
-            'model' => $transaksiModel->paginate(9),
+            'model' => $transaksiModel->select('transaksi.id_transaksi , transaksi.id_barang, barang.nama, transaksi.id_pembeli, transaksi.alamat , transaksi.jumlah, transaksi.total_harga, transaksi.status , transaksi.resi, transaksi.service,transaksi.alamat ')
+                ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
+                ->orderBy('transaksi.id_transaksi', 'ASC')
+                ->paginate(9),
             'pager' => $transaksiModel->pager,
         ];
-
         return view('transaksi/index', [
             'data' => $data,
         ]);
@@ -49,7 +48,27 @@ class Transaksi extends BaseController
         $transaksiModel = new \App\Models\transaksiModel();
 
         $data = [
-            'model' => $transaksiModel->where('status', 0)->paginate(9),
+            'model' => $transaksiModel->select('transaksi.id_transaksi , transaksi.id_barang, barang.nama, transaksi.id_pembeli, transaksi.alamat , transaksi.jumlah, transaksi.total_harga, transaksi.status , transaksi.resi, transaksi.service,transaksi.alamat ')
+                ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
+                ->where('transaksi.status', 0)
+                ->orderBy('transaksi.id_transaksi', 'ASC')->paginate(9),
+            'pager' => $transaksiModel->pager,
+        ];
+
+        return view('transaksi/index', [
+            'data' => $data,
+        ]);
+        $this->session = session();
+    }
+    public function sudahLunas()
+    {
+        $transaksiModel = new \App\Models\transaksiModel();
+
+        $data = [
+            'model' => $transaksiModel->select('transaksi.id_transaksi , transaksi.id_barang, barang.nama, transaksi.id_pembeli, transaksi.alamat , transaksi.jumlah, transaksi.total_harga, transaksi.status , transaksi.resi, transaksi.service,transaksi.alamat ')
+                ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
+                ->where('transaksi.status', 1)
+                ->orderBy('transaksi.id_transaksi', 'ASC')->paginate(9),
             'pager' => $transaksiModel->pager,
         ];
 
@@ -65,8 +84,11 @@ class Transaksi extends BaseController
             $id = $_POST['id'];
         }
         $data = [
-            'model' => $model->where('id_transaksi', $id)
-                ->paginate(10),
+            'model' => $model
+                ->select('transaksi.id_transaksi , transaksi.id_barang, barang.nama, transaksi.id_pembeli, transaksi.alamat , transaksi.jumlah, transaksi.total_harga, transaksi.status , transaksi.resi, transaksi.service,transaksi.alamat ')
+                ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
+                ->where('transaksi.id_transaksi', $id)
+                ->paginate(9),
             'pager' => $model->pager,
         ];
 
@@ -78,7 +100,6 @@ class Transaksi extends BaseController
     public function downloadInvoice()
     {
         $id = $this->request->uri->getSegment(3);
-
         $transaksiModel = new \App\Models\TransaksiModel();
         $transaksi = $transaksiModel->find($id);
 
@@ -132,6 +153,7 @@ class Transaksi extends BaseController
             'updated_by' => $this->session->get('id'),
             'updated_date' => date("Y-m-d H:i:s")
         ];
+
         $transaksiModel->update($id, $data);
         //logging
         $logModel = new \App\Models\LogModel();
@@ -156,8 +178,6 @@ class Transaksi extends BaseController
         $status = $transaksi->status;
         if ($transaksi->status == 0) {
             $status = 1;
-        } else {
-            $status = 0;
         }
         $t->id_transaksi = $transaksi->id_transaksi;
         $t->id_barang = $transaksi->id_barang;

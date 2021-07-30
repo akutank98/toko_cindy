@@ -42,6 +42,7 @@ $alamat = [
     'id' => 'alamat',
     'class' => 'form-control',
     'value' => null,
+    'required' => true
 ];
 
 $submit = [
@@ -53,30 +54,30 @@ $submit = [
 ];
 ?>
 
-<div class="container">
+<div class="container" style="padding-bottom: 15vh;">
     <div class="row">
-        <?php
-        foreach ($detail as $index => $detail) {
-        }
-        ?>
         <div class="col-6">
             <div class="card">
                 <div class="card-body">
                     <img class="img-fluid" src="<?= base_url('uploads/' . $model->gambar) ?>" />
                     <h1 style="font-size: 2.2rem;" class="text-success"><?= $model->nama ?></h1>
-                    <h4 style="font-size: 1.1rem;"> Harga : <?= $model->harga ?></h4>
+                    <h4 style="font-size: 1.1rem;"> Harga : <?= "Rp " . number_format($model->harga, 2, ',', '.'); ?></h4>
                     <h4 style="font-size: 1.1rem;"> Stok : <?= $model->stok ?></h4>
-                    <?php if ($detail == null) : ?>
-                        <div class="text-body" style="font-size:1.1rem;">Berat : - gram</div>
+                    <?php if ($model->ukuran == null && $model->berat == null) : ?>
+                        <div class="text-body" style="font-size:1.1rem;">Berat : 500 gram</div>
                         <div class="text-body" style="font-size:1.1rem;">Ukuran : - </div>
                         <div class="text-body" style="font-size:1.1rem;">Deskripsi : </div>
                         <p class="text-body" style="font-size:1.1rem;">Tidak ada deskripsi</p>
+                        <?php dd('null'); ?>
+                        <!-- jika sudah ada deskripsi -->
                     <?php else : ?>
-                        <div class="text-body" style="font-size:1.1rem;">Berat : <?= $detail->berat; ?> gram</div>
-                        <div class="text-body" style="font-size:1.1rem;">Ukuran : <?= $detail->ukuran; ?> </div>
+                        <div class="text-body" style="font-size:1.1rem;">Berat : <?= $model->berat ?>gram</div>
+                        <div class="text-body" style="font-size:1.1rem;">Ukuran : <?= $model->ukuran ?></div>
                         <div class="text-body" style="font-size:1.1rem;">Deskripsi : </div>
-                        <p class="text-body" style="font-size:1.1rem;"><?= $detail->deskripsi; ?></p>
-                    <?php endif; ?>
+                        <div class="form-group">
+                            <textarea style="resize: none;" readonly class="form-control" rows="<?= substr_count($model->deskripsi, "\n") + 1; ?>" id="exampleFormControlTextarea1" style="font-size:1.1rem;"><?= $model->deskripsi ?></textarea>
+                        </div>
+                    <?php endif ?>
                 </div>
             </div>
         </div>
@@ -86,7 +87,7 @@ $submit = [
             <form action="" method="POST">
                 <div class="form-group">
                     <label for="provinsi">Pilih Provinsi</label>
-                    <select class="form-control" id="provinsi" name="provinsi" id="provinsi">
+                    <select class="form-control" id="provinsi" name="provinsi" id="provinsi" required>
                         <option>Select Provinsi</option>
                         <?php foreach ($provinsi as $p) : ?>
                             <option value="<?= $p->province_id ?>"><?= $p->province ?></option>
@@ -96,13 +97,13 @@ $submit = [
 
                 <div class="form-group">
                     <label for="kabupaten">Pilih Kabupaten/Kota</label>
-                    <select class="form-control" id="kabupaten" name="kabupaten">
+                    <select class="form-control" id="kabupaten" name="kabupaten" required>
                         <option>Pilih Kabupaten/kota</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="service">Pilih Service</label>
-                    <select class="form-control" id="service">
+                    <select class="form-control" id="service" required>
                         <option>Select Service</option>
                     </select>
             </form>
@@ -111,7 +112,9 @@ $submit = [
 
         <strong>Estimasi : <span id="estimasi"></span></strong>
         <hr>
-        <?= form_open('etalase/beli') ?>
+        <?php $attributes = ['id' => 'myForm'];
+        ?>
+        <?= form_open('Etalase/beli', $attributes) ?>
         <?= form_input($id_barang) ?>
         <?= form_input($id_pembeli) ?>
         <div class="form-group">
@@ -133,6 +136,8 @@ $submit = [
         <div class="text-right">
             <?= form_submit($submit) ?>
         </div>
+        <input type="hidden" name="Hongkir" id="Hongkir" value="<?php if ($model->berat == null) echo '500';
+                                                                else echo $model->berat; ?>">
         <input type="hidden" name="provinsi" id="hProv">
         <input type="hidden" name="kabupaten" id="hKab">
         <input type="hidden" name="service" id="hService">
@@ -145,12 +150,17 @@ $submit = [
 <script>
     $('document').ready(function() {
         var jumlah_pembelian = $("#jumlah").val();
-        var berat = <?php if ($detail == null) echo '500';
-                    else echo $detail->berat; ?>;
+        var berat = $('#Hongkir').val();
         var harga = <?= $model->harga ?>;
+        var Hongkir = berat;
+        console.log(Hongkir);
+
         $("#provinsi").on('change', function() {
             $("#kabupaten").empty();
             $("#service").empty();
+            $("#service").append($('<option>', {
+                text: 'Select service'
+            }));
             var id_province = $(this).val();
             $.ajax({
                 url: "<?= site_url('etalase/getcity') ?>",
@@ -175,15 +185,18 @@ $submit = [
         });
 
         $("#kabupaten").on('change', function() {
-            $("#service").empty();
             var id_city = $(this).val();
+            $("#service").empty();
+            $("#service").append($('<option>', {
+                text: 'Select service'
+            }));
             $.ajax({
                 url: "<?= site_url('etalase/getcost') ?>",
                 type: 'GET',
                 data: {
                     'origin': 492, //Tulungagung
                     'destination': id_city,
-                    'weight': berat * jumlah_pembelian,
+                    'weight': Hongkir,
                     'courier': 'jne'
                 },
                 dataType: 'json',
@@ -224,11 +237,32 @@ $submit = [
             } else if ($(this).val() < min) {
                 $(this).val(min);
             }
+            Hongkir = berat;
+            Hongkir *= $("#jumlah").val();
             $("ongkir").val(ongkir);
-            console.log(berat);
             jumlah_pembelian = $("#jumlah").val();
-            var total_harga = (jumlah_pembelian * harga) + ongkir;
+            var id_city = $("#kabupaten").find("option:selected").val();
+            var service = $("#service").prop('selectedIndex') - 1;
+            console.log([id_city, ' ', service]);
+            $.ajax({
+                url: "<?= site_url('etalase/getcost') ?>",
+                type: 'GET',
+                data: {
+                    'origin': 492, //Tulungagung
+                    'destination': id_city,
+                    'weight': Hongkir,
+                    'courier': 'jne'
+                },
+                dataType: 'json',
+                success: function(data) {
+                    var results = data["rajaongkir"]["results"][0]["costs"][service]["cost"][0]["value"];
+                    console.log(results);
+                    $("#ongkir").val(results);
+                    ongkir = results
+                },
+            });
 
+            var total_harga = (jumlah_pembelian * harga) + ongkir;
             $("#total_harga").val(total_harga);
         });
     });

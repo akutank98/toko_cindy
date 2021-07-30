@@ -11,15 +11,21 @@ class Riwayat extends BaseController
     public function index()
     {
         $id = $this->session->get('id');
+        $pengirimanModel = new \App\Models\TransaksiModel();
+        $pengiriman = $pengirimanModel->findAll();
 
         $transaksiModel = new \App\Models\TransaksiModel();
         $data = [
-            'transaksiModel' => $transaksiModel->join('barang', 'barang.id_barang=transaksi.id_barang')->where('id_pembeli', $id)->paginate(10),
+            'transaksiModel' => $transaksiModel
+                ->join('barang', 'barang.id_barang=transaksi.id_barang')
+                ->where('id_pembeli', $id)
+                ->paginate(10),
             'pager' => $transaksiModel->pager,
         ];
 
         return view('riwayat/index', [
             'data' => $data,
+            'pengiriman' => $pengiriman,
         ]);
     }
 }

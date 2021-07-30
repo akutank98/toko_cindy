@@ -6,6 +6,7 @@ $errors = $session->getFlashdata('errors_createDeskripsi');
 ?>
 <div class="container">
     <div class="row">
+        <h4 class="text-left">Masukkan deskripsi barang dengan ID : <?= $barang->id_barang; ?></h4>
         <?php if ($errors != null) : ?>
             <div class="alert alert-danger">
                 <h4 class="alert-heading">Error </h4>
@@ -17,8 +18,9 @@ $errors = $session->getFlashdata('errors_createDeskripsi');
                 </p>
             </div>
         <?php endif ?>
-        <h4 class="text-left">Masukkan deskripsi barang dengan ID : <?= $barang->id_barang; ?></h4>
+
         <form action="" class="form-control" method="post">
+            <?= csrf_field(); ?>
             <label>Masukkan ukuran</label>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="ukuran" id="inlineRadio1" value="S">
@@ -38,16 +40,15 @@ $errors = $session->getFlashdata('errors_createDeskripsi');
             </div>
             <div class="form-group">
                 <label for="ukuran">Masukkan berat</label>
-                <input type="number" name="berat" class="form-control" placeholder=" Satuan(gram)">
+                <input type="number" name="berat" class="form-control" placeholder=" Satuan(gram)" required>
             </div>
             <div class="form-group">
                 <label for="TextArea">Masukkan Deskripsi</label>
-                <textarea class="form-control" name="deskripsi" id="TextArea" rows="3"></textarea>
+                <textarea style="resize: none;" class="form-control" name="deskripsi" id="TextArea" rows="3"></textarea>
             </div>
             <button type="submit" class="btn btn-primary mb-1">Simpan</button>
         </form>
     </div>
 </div>
-
 
 <?= $this->endSection() ?>

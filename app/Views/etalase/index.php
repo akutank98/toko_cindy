@@ -3,8 +3,9 @@
 
 <div class="container">
     <div class="container-fluid mb-3">
-        <form class="d-flex" role="form" action="<?= site_url('etalase/search'); ?>" method="post">
-            <input class="form-control me-2" name="nama_barang" type="search" placeholder="Cari Barang" aria-label="Search">
+        <form class="d-flex mb-3" role="form" action="<?= site_url('Etalase/search'); ?>" method="post">
+            <?= csrf_field(); ?>
+            <input class="form-control me-2" name="barang" type="search" placeholder="Cari Barang" aria-label="Search">
             <button type="submit" class="btn btn-info">Search</button>
         </form>
     </div>

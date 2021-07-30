@@ -7,6 +7,7 @@ $nama = [
     'id' => 'nama',
     'value' =>  null,
     'class' => 'form-control',
+    'required' => true
 ];
 
 $harga = [
@@ -16,6 +17,7 @@ $harga = [
     'class' => 'form-control',
     'type' => 'number',
     'min' => 0,
+    'required' => true,
 ];
 
 $stok = [
@@ -25,6 +27,8 @@ $stok = [
     'class' => 'form-control',
     'type' => 'number',
     'min' => 0,
+    'required' => true,
+
 ];
 
 $gambar = [
@@ -73,6 +77,32 @@ $errors = $session->getFlashdata('errors_create');
     <div class="form-group">
         <?= form_label("Stok", "stok") ?>
         <?= form_input($stok) ?>
+    </div>
+
+    <label for="ukuran">Masukkan ukuran</label>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="ukuran" id="inlineRadio1" value="S">
+        <label class="form-check-label" for="inlineRadio1">S</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="ukuran" id="inlineRadio2" value="M">
+        <label class="form-check-label" for="inlineRadio2">M</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="ukuran" id="inlineRadio3" value="L">
+        <label class="form-check-label" for="inlineRadio2">L</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="ukuran" id="inlineRadio4" value="Lainnya">
+        <label class="form-check-label" for="inlineRadio2">Lainnya</label>
+    </div>
+    <div class="form-group">
+        <label for="ukuran">Masukkan berat</label>
+        <input type="number" name="berat" class="form-control" placeholder=" Satuan(gram)" required>
+    </div>
+    <div class="form-group">
+        <label for="TextArea">Masukkan Deskripsi</label>
+        <textarea style="resize: none;" class="form-control" name="deskripsi" id="TextArea" rows="3"></textarea>
     </div>
 
     <div class="form-group">

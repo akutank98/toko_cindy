@@ -26,6 +26,10 @@
             padding: 3rem 1.5rem;
             text-align: center;
         }
+
+        .container {
+            padding-bottom: 15vh;
+        }
     </style>
 </head>
 
