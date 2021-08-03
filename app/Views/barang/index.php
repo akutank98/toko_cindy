@@ -35,7 +35,7 @@
 									<?= csrf_field() ?>
 									<div class="modal-body">
 										<label class="form-label-group" for="stok">Stok : </label>
-										<input class="form-control" name="stok" id="<?= 'stok' . $barang->id_barang; ?>" value="<?= $barang->stok; ?>" type="number">
+										<input class="form-control" name="stok" id="<?= 'stok' . $barang->id_barang; ?>" value="<?= $barang->stok; ?>" type="number" min="1">
 									</div>
 									<div class=" modal-footer">
 										<button onclick="document.getElementById('<?= 'stok' . $barang->id_barang; ?>').value = <?= $barang->stok; ?>" class="btn btn-secondary" data-dismiss="modal">Batal</button>

@@ -1,6 +1,5 @@
 <?= $this->extend('layout'); ?>
 <?= $this->section('content'); ?>
-
 <div class="container">
     <div class="container-fluid mb-3">
         <form class="d-flex mb-3" role="form" action="<?= site_url('Etalase/search'); ?>" method="post">
@@ -22,7 +21,7 @@
                         <p class="text-info">Stok : <?= $m->stok ?></p>
                     </div>
                     <div class="card-footer mb-3">
-                        <a href="<?= site_url('etalase/beli/' . $m->id_barang) ?>" style="width:100%" class="btn btn-success">Beli</a>
+                        <a href="<?= site_url('etalase/beli/' . $m->id_barang) ?>" style="width:100%; background-color: palevioletred !important; " class="btn btn-dark">Beli</a>
                     </div>
                 </div>
             </div>

@@ -48,10 +48,6 @@ class Transaksi extends Migration
 			'service' => [
 				'type' => 'TEXT'
 			],
-			'sampai' => [
-				'type' => 'INT',
-				'constraint' => 1,
-			],
 			'resi' => [
 				'type' => 'TEXT'
 			],

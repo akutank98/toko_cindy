@@ -32,9 +32,10 @@ class Transaksi extends BaseController
     {
         $transaksiModel = new \App\Models\transaksiModel();
         $data = [
-            'model' => $transaksiModel->select('transaksi.id_transaksi , transaksi.id_barang, barang.nama, transaksi.id_pembeli, transaksi.alamat , transaksi.jumlah, transaksi.total_harga, transaksi.status , transaksi.resi, transaksi.service,transaksi.alamat ')
+            'model' => $transaksiModel
+                ->select('transaksi.*,barang.nama')
                 ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
-                ->orderBy('transaksi.id_transaksi', 'ASC')
+                ->orderBy('transaksi.created_date', 'DESC')
                 ->paginate(9),
             'pager' => $transaksiModel->pager,
         ];
@@ -48,10 +49,12 @@ class Transaksi extends BaseController
         $transaksiModel = new \App\Models\transaksiModel();
 
         $data = [
-            'model' => $transaksiModel->select('transaksi.id_transaksi , transaksi.id_barang, barang.nama, transaksi.id_pembeli, transaksi.alamat , transaksi.jumlah, transaksi.total_harga, transaksi.status , transaksi.resi, transaksi.service,transaksi.alamat ')
+            'model' => $transaksiModel
+                ->select('transaksi.*,barang.nama')
                 ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
                 ->where('transaksi.status', 0)
-                ->orderBy('transaksi.id_transaksi', 'ASC')->paginate(9),
+                ->orderBy('transaksi.created_date', 'DESC')
+                ->paginate(9),
             'pager' => $transaksiModel->pager,
         ];
 
@@ -65,10 +68,12 @@ class Transaksi extends BaseController
         $transaksiModel = new \App\Models\transaksiModel();
 
         $data = [
-            'model' => $transaksiModel->select('transaksi.id_transaksi , transaksi.id_barang, barang.nama, transaksi.id_pembeli, transaksi.alamat , transaksi.jumlah, transaksi.total_harga, transaksi.status , transaksi.resi, transaksi.service,transaksi.alamat ')
+            'model' => $transaksiModel
+                ->select('transaksi.*,barang.nama')
                 ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
-                ->where('transaksi.status', 1)
-                ->orderBy('transaksi.id_transaksi', 'ASC')->paginate(9),
+                ->where('transaksi.status >', 0)
+                ->orderBy('transaksi.created_date', 'DESC')
+                ->paginate(9),
             'pager' => $transaksiModel->pager,
         ];
 
@@ -85,7 +90,7 @@ class Transaksi extends BaseController
         }
         $data = [
             'model' => $model
-                ->select('transaksi.id_transaksi , transaksi.id_barang, barang.nama, transaksi.id_pembeli, transaksi.alamat , transaksi.jumlah, transaksi.total_harga, transaksi.status , transaksi.resi, transaksi.service,transaksi.alamat ')
+                ->select('transaksi.*,barang.nama')
                 ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
                 ->where('transaksi.id_transaksi', $id)
                 ->paginate(9),
@@ -95,6 +100,37 @@ class Transaksi extends BaseController
         return view('transaksi/index', [
             'data' => $data,
         ]);
+    }
+
+    public function batalTransaksi()
+    {
+        $id = $this->request->uri->getSegment(3);
+        $modelBarang = new \App\Models\BarangModel();
+        $modelTransaksi = new \App\Models\TransaksiModel();
+
+        $transaksi = $modelTransaksi->find($id);
+        $barang = $modelBarang->find($transaksi->id_barang);
+        //mengembalikan stok yang berkurang
+        $stok = $barang->stok + $transaksi->jumlah;
+
+        $dataB = [
+            'stok' => $stok
+        ];
+        $modelBarang->update($transaksi->id_barang, $dataB);
+        $modelTransaksi->delete($id);
+
+        //logging
+        $logModel = new \App\Models\LogModel();
+        $l = new \App\Entities\Log();
+        $l->action = 'delete';
+        $l->table_name = 'transaksi';
+        $l->id_modified = $id;
+        $l->change_date = date("Y-m-d H:i:s");
+        $l->id_modifier = $this->session->get('id');
+        $l->keterangan = 'batalkan transaksi';
+        $logModel->save($l);
+
+        return redirect()->to(site_url('transaksi/index'));
     }
 
     public function downloadInvoice()
@@ -150,6 +186,7 @@ class Transaksi extends BaseController
         $resi = $this->request->getPost('resi');
         $data = [
             'resi' => $resi,
+            'status' => 2,
             'updated_by' => $this->session->get('id'),
             'updated_date' => date("Y-m-d H:i:s")
         ];
@@ -204,5 +241,66 @@ class Transaksi extends BaseController
         $l->keterangan = 'status transaksi';
         $logModel->save($l);
         return redirect()->to(site_url('transaksi/index'));
+    }
+    public function laporan()
+    {
+        $transaksiModel = new \App\Models\TransaksiModel();
+        $transaksi = $transaksiModel
+            ->select('transaksi.*,barang.nama')
+            ->join('barang', 'barang.id_barang=transaksi.id_barang', 'left')
+            ->where('transaksi.status', 2)->paginate();
+        return view('transaksi/laporan', [
+            'transaksi' => $transaksi,
+            'pager' => $transaksiModel->pager,
+            'end' => null,
+            'start' => null
+        ]);
+    }
+    public function rangeLaporan()
+    {
+        $transaksiModel = new \App\Models\TransaksiModel();
+        $start = date("Y-m-d", strtotime($_POST['date_timepicker_start']));
+        $end = date("Y-m-d", strtotime($_POST['date_timepicker_end']));
+
+        $transaksi = $transaksiModel
+            ->select('transaksi.*,barang.nama')
+            ->join('barang', 'barang.id_barang=transaksi.id_barang', 'left')
+            ->where("status = 2 AND transaksi.created_date BETWEEN '$start' AND '$end'")
+            ->paginate();
+
+        return view('transaksi/laporan', [
+            'transaksi' => $transaksi,
+            'pager' => $transaksiModel->pager,
+        ]);
+    }
+    public function cetakLaporan()
+    {
+        $html = $_POST['htmlreport'];
+        $tgl = $_POST['tgl'];
+        $htmlR = view('transaksi/pdfLaporan', [
+            'html' => $html
+        ]);
+        $pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false);
+
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Toko Cindy');
+        $pdf->SetTitle('Laporan Penjualan' . $tgl);
+        $pdf->SetSubject('Laporan');
+
+
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->addPage();
+
+        // output the HTML content
+        $pdf->writeHTML($htmlR, true, false, true, false, '');
+        $start = '';
+        $end = '';
+        //set response
+        $this->response->setContentType('application/pdf');
+        $name = 'laporanPenjualan' . $tgl . '.pdf';
+        //Close and output PDF document
+        $pdf->Output($name, 'I');
     }
 }

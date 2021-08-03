@@ -53,49 +53,6 @@ class Barang extends BaseController
             'barang' => $barang,
         ]);
     }
-    // public function deskripsi()
-    // {
-    //     $id_barang = $this->request->uri->getSegment(3);
-    //     $deskripsiModel = new \App\Models\DetailBarangModel();
-    //     $entityDes = new \App\Entities\DetailBarang();
-    //     $barangModel = new \App\Models\BarangModel();
-    //     $barang = $barangModel->find($id_barang);
-
-    //     if ($this->request->getPost()) {
-    //         $errors = $this->validation->getErrors();
-    //         $data = $this->request->getPost();
-    //         $entityDes->fill($data);
-    //         $entityDes->id_barang = $id_barang;
-    //         $this->validation->run($data, 'deskripsi');
-    //         if (!$errors) {
-    //             $entityDes->fill($data);
-
-    //             $entityDes->created_by = $this->session->get('id');
-    //             $entityDes->created_date = date("Y-m-d H:i:s");
-    //             $deskripsiModel->save($entityDes);
-    //             $segments = ['barang', 'view', $id_barang];
-
-    //             // logging
-    //             $logModel = new \App\Models\LogModel();
-    //             $l = new \App\Entities\Log();
-    //             $l->action = 'create';
-    //             $l->table_name = 'detail_barang';
-    //             $l->id_modified = $deskripsiModel->insertID();
-    //             $l->change_date = date("Y-m-d H:i:s");
-    //             $l->id_modifier = $this->session->get('id');
-    //             $logModel->save($l);
-
-    //             return redirect()->to(site_url($segments));
-    //         } else {
-    //             $this->session->setFlashdata('errors_createDeskripsi', $errors);
-    //         }
-    //     } else {
-    //         return view('barang/createDeskripsi', [
-    //             'barang' => $barang,
-    //             $id_barang,
-    //         ]);
-    //     }
-    // }
 
     public function create()
     {
@@ -145,7 +102,7 @@ class Barang extends BaseController
 
             $this->validation->run($data, 'barangupdate');
             $errors = $this->validation->getErrors();
-
+            $old_gambar = $barang->gambar;
             if (!$errors) {
                 $b = new \App\Entities\Barang();
                 $b->id_barang = $id_barang;
@@ -153,6 +110,7 @@ class Barang extends BaseController
                 $b->fill($data);
                 if ($this->request->getFile('gambar')->isValid()) {
                     $b->gambar = $this->request->getFile('gambar');
+                    unlink('uploads/' . $old_gambar);
                 }
                 $b->updated_by = $this->session->get('id');
                 $b->updated_date = date("Y-m-d H:i:s");

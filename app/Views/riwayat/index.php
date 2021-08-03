@@ -1,6 +1,6 @@
 <?= $this->extend('layout') ?>
 <?= $this->section('content') ?>
-<h1>Transaksi</h1>
+<h1>Riwayat Pembelian</h1>
 <div class="row">
     <table class="table">
         <thead>
@@ -13,16 +13,15 @@
                 <th>Tanggal</th>
                 <th>Status</th>
                 <th>Resi Pengiriman</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
             <div class="container-fluid">
-                <?php
-                foreach ($data['transaksiModel'] as $index => $transaksi) : ?>
-                    <?php $id = $transaksi->id_transaksi ?>
+                <?php $num = 0; ?>
+                <?php foreach ($data['transaksiModel'] as $index => $transaksi) : ?>
+                    <?php $num += 1; ?>
                     <tr>
-                        <td><?= $transaksi->id_transaksi; ?></td>
+                        <td><?= $num; ?></td>
                         <td><?= $transaksi->nama; ?></td>
                         <td><?= $transaksi->jumlah; ?></td>
                         <td><?= $transaksi->ongkir; ?></td>
@@ -31,9 +30,11 @@
                         <td>
                             <?php if ($transaksi->status == 0) {
                                 echo "Belum lunas";
+                            } else if ($transaksi->status == 1) {
+                                echo "Sudah lunas,belum terkirim";
                             } else {
-                                echo "Sudah lunas" ?>
-                            <?php } ?>
+                                echo "Pesanan sudah terkirim";
+                            } ?>
                         </td>
                         <!-- salam -->
                         <?php $jam = date("G");
@@ -47,11 +48,11 @@
                             $sapa = "Selamat Malam.";
                         ?>
                         <!-- hanya barang yang sudah lunas dan memiliki resi yang ditampilkan -->
-                        <td><?php if ($transaksi->resi != null && $transaksi->status == 1) { ?>
+                        <td><?php if ($transaksi->resi != null && $transaksi->status == 2) { ?>
                                 <?= $transaksi->resi; ?>
                                 <a href="https://cekresi.com/?v=wi1&e=jne&noresi=<?= $transaksi->resi; ?>" class="btn btn-info" target="_blank">Cek resi</a>
                             <?php } else { ?>
-                                <a href="https://api.whatsapp.com/send?phone=628155051048&text=<?= urlencode($sapa . ' Admin / Owner Toko Cindy') . '%0a' . urlencode('Konfirmasi pesanan dengan ID : ' . $transaksi->id_transaksi) . '%0a' . urlencode('ID User :  ' . $transaksi->id_pembeli) . '%0a' . urlencode('Tanggal transaksi : ' . date("d-m-Y", strtotime($transaksi->created_date))); ?>" target="_blank" class="text-info">Hubungi Admin</a>
+                                <a href="https://api.whatsapp.com/send?phone=628155051048&text=<?= urlencode($sapa . ' Admin / Owner Toko Cindy') . '%0a' . urlencode('Konfirmasi pesanan dengan ID : ' . $transaksi->id_transaksi) . '%0a' . urlencode('Nama User :  ' . $transaksi->username) . '%0a' . urlencode('Tanggal transaksi : ' . date("d-m-Y", strtotime($transaksi->created_date))) . urlencode(' Total Pembelian : ' . date("d-m-Y", strtotime($transaksi->total_harga))); ?>" target="_blank" class="text-info">Hubungi Admin</a>
                             <?php } ?>
                         </td>
                     <?php endforeach ?>

@@ -50,7 +50,8 @@ $submit = [
     'id' => 'submit',
     'type' => 'submit',
     'value' => 'Beli',
-    'class' => 'btn btn-success',
+    'class' => 'btn btn-dark',
+    'style' => 'background-color: palevioletred'
 ];
 ?>
 

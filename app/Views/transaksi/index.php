@@ -35,11 +35,34 @@
 					$color = 'background-color: whitesmoke;';
 				} elseif ($transaksi->status == 1 && $transaksi->resi == null) {
 					$color = 'background-color: lightyellow;';
-				} elseif ($transaksi->status == 1 && $transaksi->resi != null) {
-					$color = 'background-color: lightblue;';
+				} elseif ($transaksi->status == 2) {
+					$color = 'background-color: lightcyan;';
 				}
 				?>
-				<!-- init modal value -->
+				<!-- modal untuk batal -->
+				<div class="modal fade" id="exampleModalBatal<?= $transaksi->id_transaksi; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">
+									Batalkan transaksi
+								</h5>
+							</div>
+							<form action="/Transaksi/batalTransaksi/<?= $transaksi->id_transaksi; ?>" method="post">
+								<?= csrf_field() ?>
+								<div class="modal-body">
+									<label class="form-label-group" for="resi">Batalkan pesanan : <?= $transaksi->id_transaksi; ?> </label>
+								</div>
+								<div class=" modal-footer">
+									<button class="btn btn-secondary" data-dismiss="modal">Batal</button>
+									<button type="submit" class="btn btn-info">Simpan</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<!-- init modal value resi -->
 				<div class="modal fade" id="exampleModalResi<?= $transaksi->id_transaksi; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
@@ -52,9 +75,9 @@
 								<?= csrf_field() ?>
 								<div class="modal-body">
 									<label class="form-label-group" for="resi">Resi : </label>
-									<input class="form-control" name="resi" id="<?= 'resi' . $transaksi->id_transaksi; ?>" value="<?= $transaksi->resi; ?>" <?php if ($transaksi->status == 1 && $transaksi->resi != null) echo 'readonly'; ?> type="text">
+									<input class="form-control" name="resi" id="<?= 'resi' . $transaksi->id_transaksi; ?>" value="<?= $transaksi->resi; ?>" <?php if ($transaksi->status != 0 && $transaksi->resi != null) echo 'readonly'; ?> type="text">
 								</div>
-								<?php if ($transaksi->status == 1 && $transaksi->resi != null) {
+								<?php if ($transaksi->status != 0 && $transaksi->resi != null) {
 									$display = 'none';
 								} else {
 									$display = 'block';
@@ -81,17 +104,20 @@
 						<?php
 						if ($transaksi->status == 0) {
 							echo 'Belum lunas ';
-						} else {
+						} elseif ($transaksi->status == 1) {
 							echo 'Sudah lunas ';
+						} elseif ($transaksi->status == 2) {
+							echo 'Terkirim ';
 						}
+
 						?>
-						<!-- modal button-->
+						<!-- modal button status-->
 						<?php if (session()->get('role') == 0 && $transaksi->status == 0) { ?>
 							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal<?= $transaksi->id_transaksi; ?>">
 								Ubah
 							</button>
 						<?php } ?>
-						<!-- Modal -->
+						<!-- Modal status -->
 						<div class="modal fade" id="exampleModal<?= $transaksi->id_transaksi; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog" role="document">
 								<div class="modal-content">
@@ -112,9 +138,11 @@
 					</td>
 					<td class="d-inline-flex">
 						<!-- hanya transaksi yang sudah lunas yang dapat ditambah / dilihat resi dan download invoice -->
-						<?php if ($transaksi->status == 1) {  ?>
-							<a href=" <?= site_url('transaksi/downloadInvoice/' . $transaksi->id_transaksi) ?>" class="btn btn-primary" target="_blank">Download</a>
+						<?php if ($transaksi->status != 0) {  ?>
+							<a href=" <?= site_url('Transaksi/downloadInvoice/' . $transaksi->id_transaksi) ?>" class="btn btn-primary" target="_blank">Download</a>
 							<button type="button" class="btn btn-warning ml-1" data-toggle="modal" data-target="#exampleModalResi<?= $transaksi->id_transaksi; ?>">Resi</button>
+						<?php } else { ?>
+							<button type="button" class="btn btn-danger ml-1" data-toggle="modal" data-target="#exampleModalBatal<?= $transaksi->id_transaksi; ?>">Batal</button>
 						<?php } ?>
 					</td>
 				</tr>

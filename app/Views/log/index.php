@@ -1,6 +1,7 @@
 <?= $this->extend('layout') ?>
 <?= $this->section('content') ?>
 <div class="container">
+    <h1>Log</h1>
     <table class="table">
         <thead>
             <th>ID Log</th>

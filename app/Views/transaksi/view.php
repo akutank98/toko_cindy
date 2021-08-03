@@ -2,7 +2,16 @@
 <?= $this->section('content') ?>
 <div class="container">
 	<div class="row">
-
+		<?php $jam = date("G");
+		if ($jam >= 0 && $jam <= 11)
+			$sapa = "Selamat Pagi.";
+		else if ($jam >= 12 && $jam <= 15)
+			$sapa = "Selamat Siang.";
+		else if ($jam >= 16 && $jam <= 18)
+			$sapa = "Selamat Sore.";
+		else if ($jam >= 19 && $jam <= 23)
+			$sapa = "Selamat Malam.";
+		?>
 		<div class="table-responsive ">
 			<table class="table">
 				<th style="width: 18%;">ID Transaksi
@@ -45,6 +54,7 @@
 					<td><?= $transaksi->total_harga ?></td>
 				</tr>
 			</table>
+			<a href="https://api.whatsapp.com/send?phone=628155051048&text=<?= urlencode($sapa . ' Admin / Owner Toko Cindy') . '%0a' . urlencode('Konfirmasi pesanan dengan ID : ' . $transaksi->id_transaksi) . '%0a' . urlencode('Nama User :  ' . $transaksi->username) . '%0a' . urlencode('Tanggal transaksi : ' . date("d-m-Y", strtotime($transaksi->created_date))) . urlencode(' Total Pembelian : ' . date("d-m-Y", strtotime($transaksi->total_harga))); ?>" target="_blank" class="text-info">Klik Disini Untuk Melakukan Pembayaran</a>
 		</div>
 	</div>
 </div>

@@ -47,12 +47,6 @@ class Etalase extends BaseController
         ]);
     }
 
-    public function cart()
-    {
-
-        return view('etalase/cart');
-    }
-
     public function beli()
     {
         $id = $this->request->uri->getSegment(3);
@@ -88,7 +82,6 @@ class Etalase extends BaseController
                 $transaksi->created_date = date("Y-m-d H:i:s");
                 $transaksiModel->save($transaksi);
                 $id = $transaksiModel->insertID();
-                dd($transaksi);
                 //return
                 $segment = ['transaksi', 'view', $id];
                 return redirect()->to(site_url($segment));

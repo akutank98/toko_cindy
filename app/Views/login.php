@@ -15,13 +15,15 @@ $username = [
     'name' => 'username',
     'id' => 'username',
     'value' => null,
-    'class' => 'form-control'
+    'class' => 'form-control',
+    'required' => 'required',
 ];
 
 $password = [
     'name' => 'password',
     'id' => 'password',
-    'class' => 'form-control'
+    'class' => 'form-control',
+    'required' => 'required',
 ];
 
 $session = session();

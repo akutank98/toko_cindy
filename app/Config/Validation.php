@@ -45,7 +45,7 @@ class Validation
 			'rules' => 'required|min_length[5]|is_unique[user.username]',
 		],
 		'password' => [
-			'rules' => 'required|alpha_numeric',
+			'rules' => 'required|alpha_numeric|min_length[5]',
 		],
 		'repeatPassword' => [
 			'rules' => 'required|matches[password]',

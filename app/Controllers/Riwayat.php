@@ -17,8 +17,10 @@ class Riwayat extends BaseController
         $transaksiModel = new \App\Models\TransaksiModel();
         $data = [
             'transaksiModel' => $transaksiModel
+                ->select('transaksi.*,nama')
                 ->join('barang', 'barang.id_barang=transaksi.id_barang')
                 ->where('id_pembeli', $id)
+                ->orderBy('transaksi.created_date', 'DESC')
                 ->paginate(10),
             'pager' => $transaksiModel->pager,
         ];

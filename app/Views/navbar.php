@@ -39,9 +39,9 @@ $session = session();
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Barang</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="<?= site_url('barang/index') ?>">List Barang</a>
-                            <a class="dropdown-item" href="<?= site_url('barang/barangKosong') ?>">Barang Stok Kosong</a>
-                            <a class="dropdown-item" href="<?= site_url('barang/create') ?>">Tambah Barang</a>
+                            <a class="dropdown-item" href="<?= site_url('Barang/index') ?>">List Barang</a>
+                            <a class="dropdown-item" href="<?= site_url('Barang/barangKosong') ?>">Barang Stok Kosong</a>
+                            <a class="dropdown-item" href="<?= site_url('Barang/create') ?>">Tambah Barang</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -50,6 +50,7 @@ $session = session();
                             <a class="dropdown-item" href="<?= site_url('Transaksi/index') ?>">Semua Transaksi</a>
                             <a class="dropdown-item" href="<?= site_url('Transaksi/sudahLunas') ?>">Sudah Lunas</a>
                             <a class="dropdown-item" href="<?= site_url('Transaksi/belumLunas') ?>">Belum Lunas</a>
+                            <a class="dropdown-item" href="<?= site_url('Transaksi/laporan') ?>">Laporan Penjualan</a>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -92,11 +93,9 @@ $session = session();
         <div class="form-inline my-2 my-lg-0 ml-auto">
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($session->get('isLoggedIn')) : ?>
-                    <?php if (session()->get('role') == 2) : ?>
-                        <li class="nav-item">
-                            <a href="<?= site_url('Etalase/cart') ?>" class="btn mr-3" href="">&#x1f6d2;</a>
-                        </li>
-                    <?php endif; ?>
+                    <li class="nav-item mr-2">
+                        <a class="btn-outline-light buttonLogout" style="text-decoration: none;" href="<?= site_url('User/ubahPassword') ?>">Ubah Password</a>
+                    </li>
                     <li class="nav-item">
                         <a class="btn-outline-light buttonLogout" style="text-decoration: none;" href="<?= site_url('Auth/logout') ?>">Logout</a>
                     </li>
