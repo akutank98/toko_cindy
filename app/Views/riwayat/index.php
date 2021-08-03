@@ -48,12 +48,14 @@
                             $sapa = "Selamat Malam.";
                         ?>
                         <!-- hanya barang yang sudah lunas dan memiliki resi yang ditampilkan -->
-                        <td><?php if ($transaksi->resi != null && $transaksi->status == 2) { ?>
+                        <td>
+                            <?php if ($transaksi->resi != null && $transaksi->status == 2) { ?>
                                 <?= $transaksi->resi; ?>
                                 <a href="https://cekresi.com/?v=wi1&e=jne&noresi=<?= $transaksi->resi; ?>" class="btn btn-info" target="_blank">Cek resi</a>
                             <?php } else { ?>
                                 <a href="https://api.whatsapp.com/send?phone=628155051048&text=<?= urlencode($sapa . ' Admin / Owner Toko Cindy') . '%0a' . urlencode('Konfirmasi pesanan dengan ID : ' . $transaksi->id_transaksi) . '%0a' . urlencode('Nama User :  ' . $transaksi->username) . '%0a' . urlencode('Tanggal transaksi : ' . date("d-m-Y", strtotime($transaksi->created_date))) . urlencode(' Total Pembelian : ' . date("d-m-Y", strtotime($transaksi->total_harga))); ?>" target="_blank" class="text-info">Hubungi Admin</a>
                             <?php } ?>
+                            <a href="<?= site_url('Riwayat/view/' . $transaksi->id_transaksi) ?>" class="btn btn-primary">View</a>
                         </td>
                     <?php endforeach ?>
             </div>

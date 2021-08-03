@@ -30,4 +30,18 @@ class Riwayat extends BaseController
             'pengiriman' => $pengiriman,
         ]);
     }
+    public function view()
+    {
+        $id = $this->request->uri->getSegment(3);
+
+        $transaksiModel = new \App\Models\TransaksiModel();
+        $transaksi = $transaksiModel->select('*, transaksi.id_transaksi AS id_trans')->join('barang', 'barang.id_barang=transaksi.id_barang')
+            ->join('user', 'user.id_user=transaksi.id_pembeli')
+            ->where('transaksi.id_transaksi', $id)
+            ->first();
+
+        return view('riwayat/view', [
+            'transaksi' => $transaksi,
+        ]);
+    }
 }

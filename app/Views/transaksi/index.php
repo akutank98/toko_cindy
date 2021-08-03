@@ -141,7 +141,7 @@
 						<?php if ($transaksi->status != 0) {  ?>
 							<a href=" <?= site_url('Transaksi/downloadInvoice/' . $transaksi->id_transaksi) ?>" class="btn btn-primary" target="_blank">Download</a>
 							<button type="button" class="btn btn-warning ml-1" data-toggle="modal" data-target="#exampleModalResi<?= $transaksi->id_transaksi; ?>">Resi</button>
-						<?php } else { ?>
+						<?php } else if (session()->get('role') == 0) { ?>
 							<button type="button" class="btn btn-danger ml-1" data-toggle="modal" data-target="#exampleModalBatal<?= $transaksi->id_transaksi; ?>">Batal</button>
 						<?php } ?>
 					</td>
