@@ -6,8 +6,8 @@
     }
 
     .form-holder {
-        margin-top: 20%;
-        margin-bottom: 20%;
+        margin-top: 30%;
+        margin-bottom: 30%;
     }
 </style>
 <?php
@@ -59,13 +59,13 @@ $errors = $session->getFlashdata('errors');
                         <?= form_password($password); ?>
                     </div>
                     <div>Belum punya akun?
-                        <a href="<?= site_url('Auth/register') ?>"> Daftar</a>
+                        <a href="<?= site_url('Auth/register') ?>"> Daftar</a> <br>
+                        <a href="<?= site_url('Auth/lupaPassword') ?>"> Lupa Password?</a>
                     </div>
                     <div class="text-right">
                         <?= form_submit('submit', 'Submit', ['class' => 'btn btn-primary']); ?>
                     </div>
                     <?= form_close(); ?>
-                    </form>
                 </div>
             </div>
         </div>

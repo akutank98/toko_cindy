@@ -4,6 +4,6 @@ namespace App\Entities;
 
 use CodeIgniter\Entity;
 
-class Komentar extends Entity
+class Header_Transaksi extends Entity
 {
 }

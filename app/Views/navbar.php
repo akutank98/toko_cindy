@@ -18,7 +18,7 @@ $session = session();
 
     .buttonLogout:hover {
         color: #001F3F;
-        background-color: #fff;
+        background-color: transparent;
     }
 </style>
 
@@ -27,7 +27,6 @@ $session = session();
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <?php if ($session->get('isLoggedIn')) : ?>
             <ul class="navbar-nav mr-auto">
@@ -87,20 +86,32 @@ $session = session();
                     <li class="nav-item">
                         <a class="nav-link" href="<?= site_url('Auth/caraBelanja') ?>">Panduan Pengguna</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= site_url('ShoppingCart/index') ?>">&#128722;</a>
+                    </li>
                 <?php endif ?>
             </ul>
+        <?php else : ?>
+            <div class="text-light" style="color:#fff; margin-left: 30vw;">
+                Anda harus login terlebih dahulu sebelum dapat mengakses Website <a href="<?= site_url('Auth/login') ?>" class="text-decoration-none"><u>Login</u></a>
+            </div>
         <?php endif; ?>
         <div class="form-inline my-2 my-lg-0 ml-auto">
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($session->get('isLoggedIn')) : ?>
-                    <li class="nav-item mr-2">
-                        <a class="btn-outline-light buttonLogout" style="text-decoration: none;" href="<?= site_url('User/ubahPassword') ?>">Ubah Password</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn-outline-light buttonLogout" style="text-decoration: none;" href="<?= site_url('Auth/logout') ?>">Logout</a>
-                    </li>
+                    <div class="row g-2 mr-1 ml-1">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Halo, <?= session()->get('username'); ?></a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown02">
+                                <a class="dropdown-item" href="<?= site_url('User/ubahPassword') ?>">Ubah Password</a>
+                                <a class="dropdown-item" href="<?= site_url('User/ubahEmail') ?>">Ubah Email</a>
+                                <a class="dropdown-item" href="<?= site_url('Auth/logout') ?>">Logout</a>
+                            </div>
+                        </li>
+                    </div>
                 <?php endif ?>
             </ul>
         </div>
+
     </div>
 </nav>

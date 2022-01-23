@@ -54,14 +54,14 @@ class Email extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $SMTPUser;
+	public $SMTPUser = 'tokocindytag@gmail.com';
 
 	/**
 	 * SMTP Password
 	 *
 	 * @var string
 	 */
-	public $SMTPPass;
+	public $SMTPPass = 'tokocindy123#';
 
 	/**
 	 * SMTP Port
@@ -75,7 +75,7 @@ class Email extends BaseConfig
 	 *
 	 * @var integer
 	 */
-	public $SMTPTimeout = 7;
+	public $SMTPTimeout = 60;
 
 	/**
 	 * Enable persistent SMTP connections

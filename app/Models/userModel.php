@@ -9,7 +9,7 @@ class UserModel extends Model
     protected $table = 'user';
     protected $primaryKey = 'id_user';
     protected $allowedFields = [
-        'username', 'password', 'salt', 'created_date', 'created_by', 'updated_date', 'updated_by', 'user_deleted'
+        'username', 'password', 'salt', 'email', 'created_date', 'created_by', 'updated_date', 'updated_by', 'user_deleted'
     ];
     protected $useSoftDeletes = true;
     protected $deletedField = 'user_deleted';

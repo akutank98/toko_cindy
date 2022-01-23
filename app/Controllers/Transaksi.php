@@ -15,120 +15,127 @@ class Transaksi extends BaseController
 
     public function view()
     {
+        $headerModel = new \App\Models\Header_TransaksiModel();
+        $itemModel = new \App\Models\Item_TransaksiModel();
+        $barangModel = new \App\Models\BarangModel();
         $id = $this->request->uri->getSegment(3);
-
-        $transaksiModel = new \App\Models\TransaksiModel();
-        $transaksi = $transaksiModel->select('*, transaksi.id_transaksi AS id_trans')->join('barang', 'barang.id_barang=transaksi.id_barang')
-            ->join('user', 'user.id_user=transaksi.id_pembeli')
-            ->where('transaksi.id_transaksi', $id)
-            ->first();
-
+        $header = $headerModel
+            ->select('header_transaksi.*,username')
+            ->join('user', 'user on id_pembeli = id_user')
+            ->find($id);
+        $item = $itemModel->where('id_transaksi', $header->id_header)->findAll();
         return view('transaksi/view', [
-            'transaksi' => $transaksi,
+            'items' => $item,
+            'head' => $header,
+            'barangModel' => $barangModel,
+            'title' => 'Lihat Transaksi'
         ]);
     }
+
 
     public function index()
     {
-        $transaksiModel = new \App\Models\transaksiModel();
+
+        $headModel = new \App\Models\Header_TransaksiModel();
+        $head = $headModel->select('header_transaksi.*,username')
+            ->join('user', 'user on id_pembeli = id_user')
+            ->orderBy('created_date', 'DESC')
+            ->paginate(10);
         $data = [
-            'model' => $transaksiModel
-                ->select('transaksi.*,barang.nama')
-                ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
-                ->orderBy('transaksi.created_date', 'DESC')
-                ->paginate(9),
-            'pager' => $transaksiModel->pager,
+            'head' => $head,
+            'pager' => $headModel->pager,
         ];
         return view('transaksi/index', [
             'data' => $data,
+            'title' => 'Transaksi'
         ]);
-        $this->session = session();
     }
     public function belumLunas()
     {
-        $transaksiModel = new \App\Models\transaksiModel();
+        $headModel = new \App\Models\Header_TransaksiModel();
+
+        $head = $headModel->select('header_transaksi.*,username')
+            ->join('user', 'user on id_pembeli = id_user')
+            ->where('status', 0)
+            ->orderBy('created_date', 'DESC')
+            ->paginate(10);
 
         $data = [
-            'model' => $transaksiModel
-                ->select('transaksi.*,barang.nama')
-                ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
-                ->where('transaksi.status', 0)
-                ->orderBy('transaksi.created_date', 'DESC')
-                ->paginate(9),
-            'pager' => $transaksiModel->pager,
+            'head' => $head,
+            'pager' => $headModel->pager,
         ];
 
         return view('transaksi/index', [
             'data' => $data,
+            'title' => 'Transaksi Belum Lunas'
         ]);
-        $this->session = session();
     }
     public function sudahLunas()
     {
-        $transaksiModel = new \App\Models\transaksiModel();
+        $headModel = new \App\Models\Header_TransaksiModel();
+
+        $head = $headModel->select('header_transaksi.*,username')
+            ->join('user', 'user on id_pembeli = id_user')
+            ->orderBy('created_date', 'DESC')
+            ->where('status <>', 0)
+            ->paginate(10);
 
         $data = [
-            'model' => $transaksiModel
-                ->select('transaksi.*,barang.nama')
-                ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
-                ->where('transaksi.status >', 0)
-                ->orderBy('transaksi.created_date', 'DESC')
-                ->paginate(9),
-            'pager' => $transaksiModel->pager,
+            'head' => $head,
+            'pager' => $headModel->pager,
         ];
 
         return view('transaksi/index', [
             'data' => $data,
+            'title' => 'Transaksi Sudah Lunas'
         ]);
-        $this->session = session();
     }
     public function search()
     {
-        $model = new \App\Models\TransaksiModel();
-        if (isset($_POST)) {
-            $id = $_POST['id'];
-        }
-        $data = [
-            'model' => $model
-                ->select('transaksi.*,barang.nama')
-                ->join('barang', 'barang on barang.id_barang=transaksi.id_barang', 'left')
-                ->where('transaksi.id_transaksi', $id)
-                ->paginate(9),
-            'pager' => $model->pager,
-        ];
+        if ($this->request->getPost()) {
+            $headModel = new \App\Models\Header_TransaksiModel();
+            $id = $this->request->getPost('id');
+            $head = $headModel->select('header_transaksi.*,username')
+                ->join('user', 'user on id_pembeli = id_user')
+                ->orderBy('created_date', 'DESC')
+                ->where('id_header', $id)
+                ->paginate(10);
 
-        return view('transaksi/index', [
-            'data' => $data,
-        ]);
+            $data = [
+                'head' => $head,
+                'pager' => $headModel->pager,
+            ];
+
+            return view('transaksi/index', [
+                'data' => $data,
+                'title' => 'Transaksi'
+            ]);
+        }
     }
 
     public function batalTransaksi()
     {
         $id = $this->request->uri->getSegment(3);
         $modelBarang = new \App\Models\BarangModel();
-        $modelTransaksi = new \App\Models\TransaksiModel();
+        $modelHead = new \App\Models\Header_TransaksiModel();
+        $modelItem = new \App\Models\Item_TransaksiModel();
 
-        $transaksi = $modelTransaksi->find($id);
-        $barang = $modelBarang->find($transaksi->id_barang);
-        //mengembalikan stok yang berkurang
-        $stok = $barang->stok + $transaksi->jumlah;
+        $head = $modelHead->find($id);
+        $itemArray = $modelItem
+            ->where('id_transaksi', $head->id_header)
+            ->findAll();
+        foreach ($itemArray as  $item) {
+            $barang = $modelBarang->find($item->id_barang);
+            $modelItem->delete($item->id_item);
 
-        $dataB = [
-            'stok' => $stok
-        ];
-        $modelBarang->update($transaksi->id_barang, $dataB);
-        $modelTransaksi->delete($id);
-
+            $data = [
+                'stok' => $barang->stok + $item->jumlah,
+            ];
+            $modelBarang->update($item->id_barang, $data);
+        }
+        $modelHead->delete($id);
         //logging
-        $logModel = new \App\Models\LogModel();
-        $l = new \App\Entities\Log();
-        $l->action = 'delete';
-        $l->table_name = 'transaksi';
-        $l->id_modified = $id;
-        $l->change_date = date("Y-m-d H:i:s");
-        $l->id_modifier = $this->session->get('id');
-        $l->keterangan = 'batalkan transaksi';
-        $logModel->save($l);
+        $this->logging('delete', 'header_transaksi', $id, date("Y-m-d H:i:s"), $this->session->get('id'), 'batalkan transaksi');
 
         return redirect()->to(site_url('transaksi/index'));
     }
@@ -136,19 +143,23 @@ class Transaksi extends BaseController
     public function downloadInvoice()
     {
         $id = $this->request->uri->getSegment(3);
-        $transaksiModel = new \App\Models\TransaksiModel();
-        $transaksi = $transaksiModel->find($id);
+        $headModel = new \App\Models\Header_TransaksiModel();
+        $itemModel = new \App\Models\Item_TransaksiModel();
 
-        $userModel = new \App\Models\UserModel();
-        $pembeli = $userModel->find($transaksi->id_pembeli);
-
-        $barangModel = new \App\Models\BarangModel();
-        $barang = $barangModel->find($transaksi->id_barang);
+        $head = $headModel
+            ->select('header_transaksi.*,username')
+            ->join('user', 'user on user.id_user=header_transaksi.id_pembeli')
+            ->find($id);
+        $item = $itemModel
+            ->select('item_transaksi.*,nama')
+            ->join('barang', 'barang on barang.id_barang=item_transaksi.id_barang', 'left')
+            ->where('id_transaksi', $id)
+            ->findAll();
 
         $html = view('transaksi/invoice', [
-            'transaksi' => $transaksi,
-            'pembeli' => $pembeli,
-            'barang' => $barang,
+            'head' => $head,
+            'item' => $item,
+            'title' => 'Invoice'
         ]);
 
         $pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false);
@@ -167,7 +178,7 @@ class Transaksi extends BaseController
         $pdf->writeHTML($html, true, false, true, false, '');
         //set response
         $this->response->setContentType('application/pdf');
-        $name = 'invoice_tr-' . $transaksi->id_transaksi . '.pdf';
+        $name = 'invoice_tr-' . $head->id_header . '.pdf';
 
         //Close and output PDF document
         $pdf->Output($name, 'I');
@@ -175,14 +186,9 @@ class Transaksi extends BaseController
     public function updateResi()
     {
         $id = $this->request->uri->getSegment(3);
-        $transaksiModel = new \App\Models\TransaksiModel();
-        $transaksi = $transaksiModel->find($id);
+        $modelHeader = new \App\Models\Header_TransaksiModel();
+        $transaksi = $modelHeader->find($id);
 
-        if ($transaksi->resi == null) {
-            $r = 'tambah resi';
-        } else {
-            $r = 'ubah';
-        }
         $resi = $this->request->getPost('resi');
         $data = [
             'resi' => $resi,
@@ -191,116 +197,123 @@ class Transaksi extends BaseController
             'updated_date' => date("Y-m-d H:i:s")
         ];
 
-        $transaksiModel->update($id, $data);
+        $modelHeader->update($id, $data);
         //logging
-        $logModel = new \App\Models\LogModel();
-        $l = new \App\Entities\Log();
-        $l->action = $r;
-        $l->table_name = 'transaksi';
-        $l->id_modified = $id;
-        $l->change_date = date("Y-m-d H:i:s");
-        $l->id_modifier = $this->session->get('id');
-        $l->keterangan = 'ubah resi';
-        $logModel->save($l);
+        $this->logging('tambah resi', 'header_transaksi', $id, date("Y-m-d H:i:s"), $this->session->get('id'));
         return redirect()->to(site_url('transaksi/index'));
     }
     public function updateStatusTransaksi()
     {
         $id = $this->request->uri->getSegment(3);
-
-        $transaksiModel = new \App\Models\TransaksiModel();
-        $transaksi = $transaksiModel->find($id);
-        $t = new \App\Entities\Transaksi();
-
-        $status = $transaksi->status;
-        if ($transaksi->status == 0) {
-            $status = 1;
-        }
-        $t->id_transaksi = $transaksi->id_transaksi;
-        $t->id_barang = $transaksi->id_barang;
-        $t->id_pembeli = $transaksi->id_pembeli;
-        $t->alamat = $transaksi->alamat;
-        $t->jumlah = $transaksi->jumlah;
-        $t->ongkir = $transaksi->ongkir;
-        $t->status = $status;
-        $t->total_harga = $transaksi->total_harga;
-        $t->created_by = $transaksi->created_by;
-        $t->created_date = $transaksi->created_date;
-        $t->update_by = $this->session->get('id');
-        $t->updated_date = date("Y-m-d H:i:s");
-
-        $transaksiModel->save($t);
+        $head = new \App\Models\Header_TransaksiModel();
+        $data = [
+            'status' => 1,
+            'updated_by' => $this->session->get('id'),
+            'updated_date' => date("Y-m-d H:i:s")
+        ];
+        $head->update($id, $data);
         //logging
-        $logModel = new \App\Models\LogModel();
-        $l = new \App\Entities\Log();
-        $l->action = 'update';
-        $l->table_name = 'transaksi';
-        $l->id_modified = $id;
-        $l->change_date = date("Y-m-d H:i:s");
-        $l->id_modifier = $this->session->get('id');
-        $l->keterangan = 'status transaksi';
-        $logModel->save($l);
+        $this->logging('update', 'header_transaksi', $id, date("Y-m-d H:i:s"), $this->session->get('id'), 'status transaksi');
         return redirect()->to(site_url('transaksi/index'));
     }
     public function laporan()
     {
-        $transaksiModel = new \App\Models\TransaksiModel();
-        $transaksi = $transaksiModel
-            ->select('transaksi.*,barang.nama')
-            ->join('barang', 'barang.id_barang=transaksi.id_barang', 'left')
-            ->where('transaksi.status', 2)->paginate();
         return view('transaksi/laporan', [
-            'transaksi' => $transaksi,
-            'pager' => $transaksiModel->pager,
-            'end' => null,
-            'start' => null
+            'title' => 'Laporan Transaksi'
         ]);
     }
-    public function rangeLaporan()
-    {
-        $transaksiModel = new \App\Models\TransaksiModel();
-        $start = date("Y-m-d", strtotime($_POST['date_timepicker_start']));
-        $end = date("Y-m-d", strtotime($_POST['date_timepicker_end']));
 
-        $transaksi = $transaksiModel
-            ->select('transaksi.*,barang.nama')
-            ->join('barang', 'barang.id_barang=transaksi.id_barang', 'left')
-            ->where("status = 2 AND transaksi.created_date BETWEEN '$start' AND '$end'")
-            ->paginate();
-
-        return view('transaksi/laporan', [
-            'transaksi' => $transaksi,
-            'pager' => $transaksiModel->pager,
-        ]);
-    }
     public function cetakLaporan()
     {
-        $html = $_POST['htmlreport'];
-        $tgl = $_POST['tgl'];
-        $htmlR = view('transaksi/pdfLaporan', [
-            'html' => $html
-        ]);
-        $pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false);
+        if ($this->request->getPost('datepicker') != '') {
+            $date = $this->request->getPost('datepicker');
+            $headModel = new \App\Models\Header_TransaksiModel();
+            $month = date('F', strtotime($date));
+            $year = date('Y', strtotime($date));
+            $tipe = '';
+            if ($this->request->getPost('opt') == 'month') {
+                $start = date("Y-m-d", strtotime($date));
+                $end = date("Y-m-t", strtotime($date));
+                $tipe = 'bulan';
+            } else  if ($this->request->getPost('opt') == 'date') {
+                $start = $date;
+                $end = $date;
+                $tipe = $start;
+                $head = $headModel
+                    ->select('sum(total_harga) as total')
+                    ->where("status = 2 AND created_date", $start)
+                    ->findAll();
+            } else if ($this->request->getPost('opt') == 'week') {
+                $start = date("Y-m-d", strtotime($date));
+                $end = date('Y-m-d', strtotime($start . " +7 days"));
+                $tipe = $start . '-' . $end;
+            }
+            $head = $headModel
+                ->select('sum(total_harga) as total')
+                ->where("status = 2 AND created_date BETWEEN '$start' AND '$end'")
+                ->findAll();
+            $jumlahTransaksi = $headModel
+                ->select('count(id_header) as jumlah')
+                ->where("status = 2 AND created_date BETWEEN '$start' AND '$end'")
+                ->findAll();
 
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Toko Cindy');
-        $pdf->SetTitle('Laporan Penjualan' . $tgl);
-        $pdf->SetSubject('Laporan');
+            foreach ($head as $head1) {
+                if ($head1->total != '') {
+                    $itemModel = new \App\Models\Item_TransaksiModel();
+                    $item = $itemModel
+                        ->select('item_transaksi.id_barang as id_barang,barang.nama as nama_barang,sum(item_transaksi.sub_total) as sub_total,sum(item_transaksi.jumlah) as jumlah')
+                        ->join('header_transaksi', 'header_transaksi on item_transaksi.id_transaksi=header_transaksi.id_header')
+                        ->join('barang', 'barang on barang.id_barang=item_transaksi.id_barang', 'right')
+                        ->where("header_transaksi.status = 2 AND header_transaksi.created_date BETWEEN '$start' AND '$end'")
+                        ->groupBy('item_transaksi.id_barang')
+                        ->findAll();
 
+                    if ($tipe == 'bulan') {
+                        $title = 'Laporan Penjualan :' . $month . ' ' . $year;
+                        $name = 'laporanPenjualan' . $month . $year . '.pdf';
+                    } else if ($tipe == 'week') {
+                        $title = 'Laporan Penjualan Tanggal :' . $start . '-' . $end;
+                        $name = 'laporanPenjualan' . $month . $year . '.pdf';
+                    } else if ($tipe == 'date') {
+                        $title = 'Laporan Penjualan  :' . $date;
+                        $name = 'laporanPenjualan' . $month . $year . '.pdf';
+                    }
 
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
+                    $html = view('transaksi/pdfLaporan', [
+                        'head' => $head,
+                        'month' => $month,
+                        'year' => $year,
+                        'item' => $item,
+                        'tipe' => $tipe,
+                        'countTransaksi' => $jumlahTransaksi
+                    ]);
 
-        $pdf->addPage();
+                    $pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false);
 
-        // output the HTML content
-        $pdf->writeHTML($htmlR, true, false, true, false, '');
-        $start = '';
-        $end = '';
-        //set response
-        $this->response->setContentType('application/pdf');
-        $name = 'laporanPenjualan' . $tgl . '.pdf';
-        //Close and output PDF document
-        $pdf->Output($name, 'I');
+                    $pdf->SetCreator(PDF_CREATOR);
+                    $pdf->SetAuthor('Toko Cindy');
+                    $pdf->SetTitle('Laporan Penjualan bulan :' . $month . ' ' . $year);
+                    $pdf->SetSubject('Laporan');
+
+                    $pdf->setPrintHeader(false);
+                    $pdf->setPrintFooter(false);
+
+                    $pdf->addPage();
+                    // output the HTML content
+                    $pdf->writeHTML($html, true, false, true, false, '');
+                    //set response
+                    $this->response->setContentType('application/pdf');
+
+                    //Close and output PDF document
+                    $pdf->Output($name, 'I');
+                } else {
+                    $this->session->setFlashdata('errors_transaksi', ["Tidak Ada Transaksi Pada $month $year"]);
+                    return redirect()->to('transaksi/laporan');
+                }
+            }
+        } else {
+            $this->session->setFlashdata('errors_transaksi', ['Null or Bad Request']);
+            return redirect()->to('transaksi/laporan');
+        }
     }
 }

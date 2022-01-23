@@ -49,13 +49,18 @@ $submit = [
     'name' => 'submit',
     'id' => 'submit',
     'type' => 'submit',
-    'value' => 'Beli',
+    'value' => 'Beli sekarang',
     'class' => 'btn btn-dark',
     'style' => 'background-color: palevioletred'
 ];
 ?>
 
 <div class="container" style="padding-bottom: 15vh;">
+    <?php if (session()->getFlashdata('pesan')) : ?>
+        <div class="alert alert-success" id="cartmsg" role="alert">
+            <?= session()->getFlashdata('pesan'); ?>
+        </div>
+    <?php endif; ?>
     <div class="row">
         <div class="col-6">
             <div class="card">
@@ -85,64 +90,64 @@ $submit = [
 
         <div class="col-6">
             <h4>Pengiriman</h4>
-            <form action="" method="POST">
-                <div class="form-group">
-                    <label for="provinsi">Pilih Provinsi</label>
-                    <select class="form-control" id="provinsi" name="provinsi" id="provinsi" required>
-                        <option>Select Provinsi</option>
-                        <?php foreach ($provinsi as $p) : ?>
-                            <option value="<?= $p->province_id ?>"><?= $p->province ?></option>
-                        <?php endforeach ?>
-                    </select>
-                </div>
+            <?php $attributes = ['id' => 'myForm'];
+            ?>
+            <?= form_open('Etalase/single', $attributes) ?>
+            <div class="form-group">
+                <label for="provinsi">Pilih Provinsi</label>
+                <select class="form-control" id="provinsi" name="provinsi" id="provinsi" required>
+                    <option value="">Select Provinsi</option>
+                    <?php foreach ($provinsi as $p) : ?>
+                        <option value="<?= $p->province_id ?>"><?= $p->province ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label for="kabupaten">Pilih Kabupaten/Kota</label>
-                    <select class="form-control" id="kabupaten" name="kabupaten" required>
-                        <option>Pilih Kabupaten/kota</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="service">Pilih Service</label>
-                    <select class="form-control" id="service" required>
-                        <option>Select Service</option>
-                    </select>
-            </form>
+            <div class="form-group">
+                <label for="kabupaten">Pilih Kabupaten/Kota</label>
+                <select class="form-control" id="kabupaten" name="kabupaten" required>
+                    <option value="">Pilih Kabupaten/kota</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="service">Pilih Service</label>
+                <select class="form-control" id="service" required>
+                    <option value="">Select Service</option>
+                </select>
+            </div>
+            <?= form_input($id_barang) ?>
+            <?= form_input($id_pembeli) ?>
+            <div class="form-group">
+                <?= form_label('Jumlah Pembelian', 'jumlah') ?>
+                <?= form_input($jumlah) ?>
+            </div>
+            <div class="form-group">
+                <strong>Estimasi : <span id="estimasi"></span></strong>
+                <hr>
+            </div>
+            <div class="form-group">
+                <?= form_label('Ongkir', 'ongkir') ?>
+                <?= form_input($ongkir) ?>
+            </div>
+            <div class="form-group">
+                <?= form_label('Total Harga', 'total_harga') ?>
+                <?= form_input($total_harga) ?>
+            </div>
+            <div class="form-group">
+                <?= form_label('Alamat', 'alamat') ?>
+                <?= form_input($alamat) ?>
+            </div>
+            <div class="text-right">
+                <a href="<?= site_url('Etalase/addCart/' . $model->id_barang) ?>" class="btn btn-success">Tambahkan ke keranjang &#x1F6D2;</a>
+                <?= form_submit($submit) ?>
+            </div>
+            <input type="hidden" name="Hongkir" id="Hongkir" value="<?php if ($model->berat == null) echo '500';
+                                                                    else echo $model->berat; ?>">
+            <input type="hidden" name="provinsi" id="hProv">
+            <input type="hidden" name="kabupaten" id="hKab">
+            <input type="hidden" name="service" id="hService">
+            <?= form_close() ?>
         </div>
-
-
-        <strong>Estimasi : <span id="estimasi"></span></strong>
-        <hr>
-        <?php $attributes = ['id' => 'myForm'];
-        ?>
-        <?= form_open('Etalase/beli', $attributes) ?>
-        <?= form_input($id_barang) ?>
-        <?= form_input($id_pembeli) ?>
-        <div class="form-group">
-            <?= form_label('Jumlah Pembelian', 'jumlah') ?>
-            <?= form_input($jumlah) ?>
-        </div>
-        <div class="form-group">
-            <?= form_label('Ongkir', 'ongkir') ?>
-            <?= form_input($ongkir) ?>
-        </div>
-        <div class="form-group">
-            <?= form_label('Total Harga', 'total_harga') ?>
-            <?= form_input($total_harga) ?>
-        </div>
-        <div class="form-group">
-            <?= form_label('Alamat', 'alamat') ?>
-            <?= form_input($alamat) ?>
-        </div>
-        <div class="text-right">
-            <?= form_submit($submit) ?>
-        </div>
-        <input type="hidden" name="Hongkir" id="Hongkir" value="<?php if ($model->berat == null) echo '500';
-                                                                else echo $model->berat; ?>">
-        <input type="hidden" name="provinsi" id="hProv">
-        <input type="hidden" name="kabupaten" id="hKab">
-        <input type="hidden" name="service" id="hService">
-        <?= form_close() ?>
     </div>
 </div>
 
@@ -160,7 +165,8 @@ $submit = [
             $("#kabupaten").empty();
             $("#service").empty();
             $("#service").append($('<option>', {
-                text: 'Select service'
+                text: 'Select service',
+                value: '',
             }));
             var id_province = $(this).val();
             $.ajax({
@@ -189,7 +195,8 @@ $submit = [
             var id_city = $(this).val();
             $("#service").empty();
             $("#service").append($('<option>', {
-                text: 'Select service'
+                text: 'Select service',
+                value: ''
             }));
             $.ajax({
                 url: "<?= site_url('etalase/getcost') ?>",
@@ -267,5 +274,10 @@ $submit = [
             $("#total_harga").val(total_harga);
         });
     });
+</script>
+<script>
+    setTimeout(function() {
+        $('#cartmsg').fadeOut('slow');
+    }, 2400);
 </script>
 <?= $this->endSection(); ?>

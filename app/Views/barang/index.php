@@ -41,65 +41,67 @@
 										<button onclick="document.getElementById('<?= 'stok' . $barang->id_barang; ?>').value = <?= $barang->stok; ?>" class="btn btn-secondary" data-dismiss="modal">Batal</button>
 										<button type="submit" class="btn btn-info">Simpan</button>
 									</div>
+									<input type="hidden" name="currentPage" value="<?= $data['pager']->getCurrentPage('default'); ?>">
 								</form>
 							</div>
 						</div>
-						<?php
-						if ($barang->stok == 0) {
-							$bcolor = 'background-color: beige;';
-						} else {
-							$bcolor = 'background-color: transparent;';
-						} ?>
-						<tr style="<?= $bcolor; ?>">
-							<th scope="row"><?= $barang->id_barang ?></th>
-							<td><?= $barang->nama ?></td>
-							<td>
-								<img class="img-fluid" style="object-fit: contain;" width="200px" alt="gambar" src="<?= base_url('uploads/' . $barang->gambar) ?>" />
-							</td>
-							<td><?= $barang->harga ?></td>
-							<td><?= $barang->stok ?></td>
-							<td>
-								<a href="<?= site_url('barang/view/' . $barang->id_barang) ?>" class="btn btn-primary">View</a>
-								<!-- hanya owner yang dapat update dan delete data -->
-								<?php if (session()->get('role') == 0) : ?>
-									<a href="<?= site_url('barang/update/' . $barang->id_barang) ?>" class="btn btn-success">Update</a>
-									<!-- modal trigger button owner-->
-									<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalStok<?= $barang->id_barang; ?>">
-										Ubah Stok
-									</button>
-									<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal<?= $barang->id_barang; ?>">
-										Hapus
-									</button>
-								<?php elseif (session()->get('role') == 1) : ?>
-									<!-- modal trigger button admin -->
-									<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalStok<?= $barang->id_barang; ?>">
-										Ubah Stok
-									</button>
-								<?php endif; ?>
+					</div>
+					<?php
+					if ($barang->stok == 0) {
+						$bcolor = 'background-color: beige;';
+					} else {
+						$bcolor = 'background-color: transparent;';
+					} ?>
+					<tr style="<?= $bcolor; ?>">
+						<th scope="row"><?= $barang->id_barang ?></th>
+						<td><?= $barang->nama ?></td>
+						<td>
+							<img class="img-fluid" style="object-fit: contain;" width="200px" alt="gambar" src="<?= base_url('uploads/' . $barang->gambar) ?>" />
+						</td>
+						<td><?= $barang->harga ?></td>
+						<td><?= $barang->stok ?></td>
+						<td>
+							<a href="<?= site_url('barang/view/' . $barang->id_barang) ?>" class="btn btn-primary">View</a>
+							<!-- hanya owner yang dapat update dan delete data -->
+							<?php if (session()->get('role') == 0) : ?>
+								<a href="<?= site_url('barang/update/' . $barang->id_barang) ?>" class="btn btn-success">Update</a>
+								<!-- modal trigger button owner-->
+								<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalStok<?= $barang->id_barang; ?>">
+									Ubah Stok
+								</button>
+								<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal<?= $barang->id_barang; ?>">
+									Hapus
+								</button>
+							<?php elseif (session()->get('role') == 1) : ?>
+								<!-- modal trigger button admin -->
+								<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalStok<?= $barang->id_barang; ?>">
+									Ubah Stok
+								</button>
+							<?php endif; ?>
 
-								<!-- Modal Owner-->
-								<div class="modal fade" id="exampleModal<?= $barang->id_barang; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-									<div class="modal-dialog" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">
-													Konfirmasi Hapus Barang</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												</button>
-											</div>
-											<div class="modal-body">
-												Apakah anda yakin akan menghapus barang <?= $barang->nama; ?>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-												<a href="<?= site_url('barang/delete/' . $barang->id_barang) ?>" class="btn btn-danger">Hapus</a>
-											</div>
+							<!-- Modal Owner-->
+							<div class="modal fade" id="exampleModal<?= $barang->id_barang; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">
+												Konfirmasi Hapus Barang</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											</button>
+										</div>
+										<div class="modal-body">
+											Apakah anda yakin akan menghapus barang <?= $barang->nama; ?>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+											<a href="<?= site_url('barang/delete/' . $barang->id_barang) ?>" class="btn btn-danger">Hapus</a>
 										</div>
 									</div>
 								</div>
-							</td>
-						</tr>
-					<?php endforeach; ?>
+							</div>
+						</td>
+					</tr>
+				<?php endforeach; ?>
 			</tbody>
 		</table>
 	</div>

@@ -2,7 +2,6 @@
 
 namespace Config;
 
-use App\Controllers\Auth;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Filters\CSRF;
 use CodeIgniter\Filters\DebugToolbar;
@@ -21,7 +20,8 @@ class Filters extends BaseConfig
 		'toolbar'  => DebugToolbar::class,
 		'honeypot' => Honeypot::class,
 		'auth' => \App\Filters\Auth::class,
-		'admin' => \App\Filters\Auth::class,
+		'admin' => \App\Filters\Admin::class,
+		'owner' => \App\Filters\Owner::class,
 	];
 
 	/**
@@ -62,11 +62,25 @@ class Filters extends BaseConfig
 	 *
 	 * @var array
 	 */
-	//allow access untuk barang khusus admin
 	public $filters = [
 		'admin' => [
 			'before' => [
+				'barang',
 				'barang/*',
+				'transaksi',
+				'transaksi/*',
+			],
+
+		],
+		'owner' => [
+			'before' => [
+				'user',
+				'log',
+				'log/*',
+				'transaksi/laporanTransaksi',
+				'barang/create',
+				'barang/update',
+				'barang/update/*',
 			]
 		]
 	];

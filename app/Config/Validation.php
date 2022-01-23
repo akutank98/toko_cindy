@@ -67,7 +67,24 @@ class Validation
 			'matches' => 'Tidak Match Dengan Password'
 		],
 	];
-
+	public $resetPassword = [
+		'password' => [
+			'rules' => 'required|alpha_numeric|min_length[5]',
+		],
+		'repeatPassword' => [
+			'rules' => 'required|matches[password]',
+		],
+	];
+	public $resetPassword_errors = [
+		'password' => [
+			'required' => '{field} Harus Diisi',
+			'alpha_numeric' => '{field} harus berupa angka dan huruf'
+		],
+		'repeatPassword' => [
+			'required' => '{field} Harus Diisi',
+			'matches' => 'Tidak Match Dengan Password'
+		],
+	];
 	public $login = [
 		'username' => [
 			'rules' => 'required|min_length[5]',
@@ -153,38 +170,7 @@ class Validation
 			'is_natural' => '{field} Tidak Boleh Negatif',
 		],
 	];
-	public $transaksi = [
-		'id_barang' => [
-			'rules' => 'required',
-		],
-		'id_pembeli' => [
-			'rules' => 'required',
-		],
-		'jumlah' => [
-			'rules' => 'required',
-		],
-		'total_harga' => [
-			'rules' => 'required',
-		],
-		'alamat' => [
-			'rules' => 'required',
-		],
-		'service' => [
-			'rules' => 'required'
-		],
-		'ongkir' => [
-			'rules' => 'required',
-		]
-	];
 
-	public $deskripsi = [
-		'ukuran' => 'required',
-		'berat' => 'is_natural',
-	];
-	public $deskripsiUpdate = [
-		'ukuran' => 'required',
-		'berat' => 'is_natural',
-	];
 	public $log = [
 		'action' => 'required',
 		'table_name' => 'required',

@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" href="<?= base_url('icon.png'); ?>">
 
-    <title>Toko Cindy</title>
+    <title>Toko Cindy | <?= $title; ?></title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
     <!-- Bootstrap core CSS -->
@@ -32,15 +32,10 @@
 <body>
     <?= $this->include('navbar'); ?>
 
-    <main role="main" class="container" style="height: 90vh;">
+    <main role="main" class="container" style="height: 70vh; margin-bottom: 10vh;">
         <?= $this->renderSection('content'); ?>
     </main><!-- /.container -->
-    <?php
 
-
-    if (session()->get('role') == 2) : ?>
-        <?= $this->include('footer'); ?>
-    <?php endif ?>
 
     <script src="<?= base_url('jquery-3.5.1.min.js'); ?>"></script>
     <script src="<?= base_url('bootstrap-4.0.0/dist/js/bootstrap.min.js'); ?>"></script>

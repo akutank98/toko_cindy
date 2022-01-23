@@ -13,7 +13,6 @@ class User extends BaseController
     public function index()
     {
         $model = new \App\Models\UserModel();
-
         $data = [
             'users' => $model->paginate(10),
             'pager' => $model->pager,
@@ -21,6 +20,7 @@ class User extends BaseController
 
         return view('user/index', [
             'data' => $data,
+            'title' => 'User'
         ]);
     }
     public function search()
@@ -37,6 +37,24 @@ class User extends BaseController
 
         return view('user/index', [
             'data' => $data,
+            'title' => 'User'
+        ]);
+    }
+    public function ubahEmail()
+    {
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('id'));
+
+        if ($this->request->getPost()) {
+            $data = [
+                'email' => $this->request->getPost('email')
+            ];
+            $userModel->update($user->id_user, $data);
+            $this->logging('update', 'user', $user->id_user, date("Y-m-d H:i:s"), $this->session->get('id'), 'ubah email');
+        }
+        return view('user/ubahEmail', [
+            'title' => 'Ubah Email',
+            'user' => $user
         ]);
     }
     public function ubahPassword()
@@ -51,28 +69,22 @@ class User extends BaseController
             $old_password = $data['old_password'];
             $salt = $user->salt;
             if ($user->password !== md5($salt . $old_password)) {
+                $this->session->setFlashdata('error', ['Password tidak cocok']);
                 return redirect()->to(site_url('user/ubahPassword'));
             } else {
-                $entityUser->password =  $newPass;
                 $data = [
                     'password' => md5($salt . $newPass)
                 ];
                 $userModel->update($user->id_user, $data);
                 // logging
-                $logModel = new \App\Models\LogModel();
-                $l = new \App\Entities\Log();
-                $l->action = 'update';
-                $l->table_name = 'user';
-                $l->id_modified = $user->id_user;
-                $l->change_date = date("Y-m-d H:i:s");
-                $l->id_modifier = $this->session->get('id');
-                $l->keterangan = 'ubah password';
-                $logModel->save($l);
+                $this->logging('update', 'user', $user->id_user, date("Y-m-d H:i:s"), $this->session->get('id'), 'ubah password');
 
-                $this->session->setFlashdata('success', ['Password telah berhasil diubah']);
+                $this->session->setFlashdata('pesan', ['Password telah berhasil diubah']);
                 return redirect()->to(site_url('user/ubahPassword'));
             }
         }
-        return view('user/ubahPassword');
+        return view('user/ubahPassword', [
+            'title' => 'Ubah Password'
+        ]);
     }
 }

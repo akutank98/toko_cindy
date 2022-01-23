@@ -13,29 +13,6 @@
 </style>
 
 <?php
-$old_password = [
-    'name' => 'old_password',
-    'id' => 'old_password',
-    'value' => null,
-    'class' => 'form-control',
-    'required' => 'required',
-    'onkeyup' => 'check()',
-];
-$newPassword = [
-    'name' => 'newPassword',
-    'id' => 'newPassword',
-    'class' => 'form-control',
-    'required' => 'required',
-    'onkeyup' => 'check()',
-    'minlength' => 5,
-];
-$repeatNewPassword = [
-    'name' => 'repeatNewPassword',
-    'id' => 'repeatNewPassword',
-    'class' => 'form-control',
-    'required' => 'required',
-    'onkeyup' => 'check()'
-];
 $session = session();
 $error = $session->getFlashData('error');
 ?>
@@ -45,7 +22,7 @@ $error = $session->getFlashData('error');
         <div class="col-md-4 offset-md-4">
             <div class="card form-holder">
                 <div class="card-body">
-                    <h1>Ubah Password</h1>
+                    <h1>Ubah Email</h1>
                     <?php if (session()->getFlashdata('pesan')) : ?>
                         <div class="alert alert-success" id="cartmsg" role="alert">
                             <?php foreach (session()->getFlashdata('pesan') as $msg) : ?>
@@ -64,18 +41,18 @@ $error = $session->getFlashData('error');
                             </p>
                         </div>
                     <?php endif ?>
-                    <?= form_open('User/ubahPassword'); ?>
+                    <?= form_open('User/ubahEmail'); ?>
                     <div class="form-group">
-                        <?= form_label("Password lama", "old_password"); ?>
-                        <?= form_password($old_password); ?>
+                        <label for="username">Username </label>
+                        <input type="text" name="username" disabled value="<?= $session->get('username'); ?>" class="form-control">
                     </div>
                     <div class="form-group">
-                        <?= form_label("Password baru", "password"); ?>
-                        <?= form_password($newPassword); ?>
+                        <label for="emailOld">Email lama</label>
+                        <input type="email" id="emailOld" name="emailOld" class="form-control" value="<?= $user->email; ?>" disabled>
                     </div>
                     <div class="form-group">
-                        <?= form_label("Repeat Password", "repeatPassword"); ?>
-                        <?= form_password($repeatNewPassword); ?>
+                        <label for="email">Email Baru</label>
+                        <input type="email" id="email" name="email" class="form-control" onkeypress="check()">
                     </div>
                     <span id='message'></span>
                     <div class="text-right">
@@ -99,18 +76,18 @@ $error = $session->getFlashData('error');
     }, 3000);
 
     var check = function() {
-        if (document.getElementById('newPassword').value == document.getElementById('old_password').value) {
+        if (document.getElementById('email').value == document.getElementById('emailOld').value) {
             document.getElementById('message').style.color = 'red';
-            document.getElementById('message').innerHTML = 'Password baru tidak boleh sama';
+            document.getElementById('message').innerHTML = 'Email baru tidak boleh sama';
             document.getElementById("submit").disabled = true;
-        } else if (document.getElementById('newPassword').value == document.getElementById('repeatNewPassword').value && document.getElementById('repeatNewPassword').value != '') {
-            document.getElementById('message').style.color = 'green';
-            document.getElementById('message').innerHTML = 'Cocok';
+        } else if (document.getElementById('email').value == '') {
+            document.getElementById('message').style.color = 'red';
+            document.getElementById('message').innerHTML = 'Email baru tidak boleh kosong';
             document.getElementById("submit").disabled = false;
         } else {
-            document.getElementById('message').style.color = 'red';
-            document.getElementById('message').innerHTML = 'Ulang password tidak cocok';
-            document.getElementById("submit").disabled = true;
+            document.getElementById('message').style.color = 'green';
+            document.getElementById('message').innerHTML = '';
+            document.getElementById("submit").disabled = false;
         }
     }
 </script>

@@ -55,9 +55,9 @@
 				</tr>
 			</table>
 			<?php if ($transaksi->status != 2) { ?>
-				<a href="https://api.whatsapp.com/send?phone=628155051048&text=<?= urlencode($sapa . ' Admin / Owner Toko Cindy') . '%0a' . urlencode('Konfirmasi pesanan dengan ID : ' . $transaksi->id_transaksi) . '%0a' . urlencode('Nama User :  ' . $transaksi->username) . '%0a' . urlencode('Tanggal transaksi : ' . date("d-m-Y", strtotime($transaksi->created_date))) . urlencode(' Total Pembelian : ' . date("d-m-Y", strtotime($transaksi->total_harga))); ?>" target="_blank" class="text-info">Klik Disini Untuk Melakukan Pembayaran</a>
+				<a class="btn-success mr-3" href="https://api.whatsapp.com/send?phone=628155051048&text=<?= urlencode($sapa . ' Admin / Owner Toko Cindy') . '%0a' . urlencode('Konfirmasi pesanan dengan ID : ' . $transaksi->id_transaksi) . '%0a' . urlencode('Nama User :  ' . $transaksi->username) . '%0a' . urlencode('Tanggal transaksi : ' . date("d-m-Y", strtotime($transaksi->created_date))) . urlencode(' Total Pembelian : ' . date("d-m-Y", strtotime($transaksi->total_harga))); ?>" target="_blank" class="text-info">Klik Disini Untuk Melakukan Pembayaran</a>
 			<?php } ?>
-			<a href="<?= site_url('riwayat/index') ?>">Kembali ke Halaman Riwayat</a>
+			<a class="btn-info" href="<?= site_url('riwayat/index') ?>">Kembali ke Halaman Riwayat</a>
 		</div>
 	</div>
 </div>

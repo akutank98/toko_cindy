@@ -55,4 +55,16 @@ class BaseController extends Controller
 		//--------------------------------------------------------------------
 		// E.g.: $this->session = \Config\Services::session();
 	}
+	protected function logging($action, $table, $modified, $date, $modifier, $keterangan = null)
+	{
+		$logModel = new \App\Models\LogModel();
+		$l = new \App\Entities\Log();
+		$l->action = $action;
+		$l->table_name = $table;
+		$l->id_modified = $modified;
+		$l->change_date = $date;
+		$l->id_modifier = $modifier;
+		$l->keterangan = $keterangan;
+		$logModel->save($l);
+	}
 }

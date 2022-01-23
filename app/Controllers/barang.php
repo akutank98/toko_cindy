@@ -14,15 +14,13 @@ class Barang extends BaseController
     public function index()
     {
         $barangModel = new \App\Models\BarangModel();
-
         $data = [
             'barangs' => $barangModel->paginate(10),
             'pager' => $barangModel->pager,
         ];
-
-
         return view('barang/index', [
             'data' => $data,
+            'title' => 'Barang'
         ]);
     }
     public function search()
@@ -39,6 +37,7 @@ class Barang extends BaseController
 
         return view('barang/index', [
             'data' => $data,
+            'title' => 'Barang'
         ]);
     }
 
@@ -51,6 +50,7 @@ class Barang extends BaseController
 
         return view('barang/view', [
             'barang' => $barang,
+            'title' => 'Detail Barang'
         ]);
     }
 
@@ -73,22 +73,16 @@ class Barang extends BaseController
                 $barangModel->save($barang);
                 $id_barang = $barangModel->insertID();
                 $segments = ['barang', 'view', $id_barang];
-                // redirect segment jadi link .../barang/view/$id
                 // logging
-                $logModel = new \App\Models\LogModel();
-                $l = new \App\Entities\Log();
-                $l->action = 'create';
-                $l->table_name = 'barang';
-                $l->id_modified = $id_barang;
-                $l->change_date = date("Y-m-d H:i:s");
-                $l->id_modifier = $this->session->get('id');
-                $logModel->save($l);
+                $this->logging('create', 'barang', $id_barang, date("Y-m-d H:i:s"), $this->session->get('id'));
 
                 return redirect()->to(site_url($segments));
             }
             $this->session->setFlashdata('errors_create', $errors);
         }
-        return view('barang/create');
+        return view('barang/create', [
+            'title' => 'Tambah Barang'
+        ]);
     }
 
     public function update()
@@ -99,7 +93,6 @@ class Barang extends BaseController
 
         if ($this->request->getPost()) {
             $data = $this->request->getPost();
-
             $this->validation->run($data, 'barangupdate');
             $errors = $this->validation->getErrors();
             $old_gambar = $barang->gambar;
@@ -117,28 +110,21 @@ class Barang extends BaseController
                 $barangModel->save($b);
                 $segments = ['Barang', 'view', $id_barang];
                 // logging
-                $logModel = new \App\Models\LogModel();
-                $l = new \App\Entities\Log();
-                $l->action = 'update';
-                $l->table_name = 'barang';
-                $l->id_modified = $id_barang;
-                $l->change_date = date("Y-m-d H:i:s");
-                $l->id_modifier = $this->session->get('id');
-                $logModel->save($l);
+                $this->logging('update', 'barang', $id_barang, date("Y-m-d H:i:s"), $this->session->get('id'));
 
                 return redirect()->to(base_url($segments));
             }
         }
         return view('barang/update', [
             'barang' => $barang,
+            'title' => 'Update Barang'
         ]);
     }
     public function updateStok()
     {
         //masih serror
         $barangModel = new \App\Models\BarangModel();
-
-
+        $currentPage = $this->request->getPost('currentPage');
         $id_barang = $this->request->uri->getSegment(3);
         $stok = $this->request->getPost('stok');
         $data = [
@@ -149,16 +135,8 @@ class Barang extends BaseController
         $barangModel->update($id_barang, $data);
 
         // logging
-        $logModel = new \App\Models\LogModel();
-        $l = new \App\Entities\Log();
-        $l->action = 'update';
-        $l->table_name = 'barang';
-        $l->id_modified = $id_barang;
-        $l->change_date = date("Y-m-d H:i:s");
-        $l->id_modifier = $this->session->get('id');
-        $l->keterangan = 'update stok';
-        $logModel->save($l);
-        return redirect()->to(site_url('barang/index'));
+        $this->logging('update', 'barang', $id_barang, date("Y-m-d H:i:s"), $this->session->get('id'), 'update stok');
+        return redirect()->to(site_url('barang/index?page=' . $currentPage));
     }
 
     public function updateDeskripsi()
@@ -166,7 +144,6 @@ class Barang extends BaseController
         $id_barang = $this->request->uri->getSegment(3);
         $barangModel = new \App\Models\BarangModel();
         $barang = $barangModel->find($id_barang);
-
 
         if ($this->request->getPost()) {
             $data = $this->request->getPost();
@@ -181,53 +158,36 @@ class Barang extends BaseController
                 $d->updated_by = $this->session->get('id');
                 $d->updated_date = date("Y-m-d H:i:s");
                 $barangModel->save($d);
-
                 $segments = ['Barang', 'view', $id_barang];
 
                 // logging
-                $logModel = new \App\Models\LogModel();
-                $l = new \App\Entities\Log();
-                $l->action = 'update';
-                $l->table_name = 'barang';
-                $l->id_modified = $barang->id_barang;
-                $l->change_date = date("Y-m-d H:i:s");
-                $l->id_modifier = $this->session->get('id');
-                $logModel->save($l);
-
+                $this->logging('update', 'barang', $barang->id_barang,  date("Y-m-d H:i:s"), $$this->session->get('id'));
                 return redirect()->to(base_url($segments));
             }
             $this->session->setFlashdata('errors_updateDeskripsi', $errors);
         }
-
-
         return view('barang/updateDeskripsi', [
             'barang' => $barang,
+            'title' => 'Update Deskripsi Barang'
         ]);
     }
     public function delete()
     {
         $id = $this->request->uri->getSegment(3);
-
+        $currentPage = $this->request->getPost('currentPage');
 
         $modelBarang = new \App\Models\BarangModel();
         $barang = $modelBarang->find($id);
         $gambar = $barang->gambar;
-        if ($barang->gambar == null) {
-            $modelBarang->delete($id);
-        } else {
+        if ($barang->gambar == null && !file_exists('uploads/' . $gambar)) {
             unlink('uploads/' . $gambar);
             $modelBarang->delete($id);
+        } else {
+            $modelBarang->delete($id);
         }
-        // logging
-        $logModel = new \App\Models\LogModel();
-        $l = new \App\Entities\Log();
-        $l->action = 'delete';
-        $l->table_name = 'barang';
-        $l->id_modified = $id;
-        $l->change_date = date("Y-m-d H:i:s");
-        $l->id_modifier = $this->session->get('id');
-        $logModel->save($l);
-        return redirect()->to(site_url('barang/index'));
+
+        $this->logging('delete', 'barang', $id, date("Y-m-d H:i:s"), $this->session->get('id'));
+        return redirect()->to(site_url('barang/index?page=' . $currentPage));
     }
     public function barangKosong()
     {
@@ -238,6 +198,7 @@ class Barang extends BaseController
         ];
         return view('barang/index', [
             'data' => $data,
+            'title' => 'Barang Kosong'
         ]);
     }
 }

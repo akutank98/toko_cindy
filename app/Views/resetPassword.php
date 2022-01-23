@@ -13,14 +13,6 @@
 </style>
 
 <?php
-$username = [
-    'name' => 'username',
-    'id' => 'username',
-    'value' => null,
-    'class' => 'form-control',
-    'required' => 'required',
-    'minlength' => 5,
-];
 $password = [
     'name' => 'password',
     'id' => 'password',
@@ -35,7 +27,7 @@ $repeatPassword = [
     'required' => 'required',
 ];
 $session = session();
-$error = $session->getFlashData('errors_register');
+$error = $session->getFlashData('error_reset');
 
 ?>
 
@@ -44,7 +36,7 @@ $error = $session->getFlashData('errors_register');
         <div class="col-md-4 offset-md-4">
             <div class="card form-holder">
                 <div class="card-body">
-                    <h1>Daftar</h1>
+                    <h1>Masukkan Password Baru</h1>
                     <?php if ($error != null) : ?>
                         <div class="alert alert-danger" id="r-error">
                             <h4 class="alert-heading">Error </h4>
@@ -56,11 +48,7 @@ $error = $session->getFlashData('errors_register');
                             </p>
                         </div>
                     <?php endif ?>
-                    <?= form_open('Auth/register'); ?>
-                    <div class="form-group">
-                        <?= form_label("Username", "username"); ?>
-                        <?= form_input($username); ?>
-                    </div>
+                    <?= form_open('Auth/changePassword'); ?>
                     <div class="form-group">
                         <?= form_label("Password", "password"); ?>
                         <?= form_password($password); ?>
@@ -69,16 +57,10 @@ $error = $session->getFlashData('errors_register');
                         <?= form_label("Repeat Password", "repeatPassword"); ?>
                         <?= form_password($repeatPassword); ?>
                     </div>
-                    <div>
-                        <label for="email">Email : </label>
-                        <input type="email" class="form-control" required>
-                    </div>
-                    <div>Sudah punya akun?
-                        <a href="<?= site_url('Auth/login') ?>"> Login</a>
-                    </div>
                     <div class="text-right">
                         <?= form_submit('submit', 'Submit', ['class' => 'btn btn-primary']); ?>
                     </div>
+                    <input type="hidden" name="tokenPar" value="<?= $tokenPar; ?>">
                     <?= form_close(); ?>
                 </div>
             </div>

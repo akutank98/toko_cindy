@@ -22,30 +22,34 @@
 		Jawa Timur, Indonesia<br>
 		+62 815-5051-048
 	</p>
-
 	<hr>
-
 	<p></p>
 	<p>
-		Pembeli : <?= $pembeli->username ?><br>
-		Alamat : <?= $transaksi->alamat ?><br>
-		Transaksi No : <?= $transaksi->id_transaksi ?><br>
-		Tanggal : <?= date('Y-m-d', strtotime($transaksi->created_date)) ?>
+		Pembeli : <?= $head->username; ?><br>
+		Alamat : <?= $head->alamat; ?><br>
+		Transaksi No : <?= $head->id_header; ?><br>
+		Tanggal : <?= date('Y-m-d', strtotime($head->created_date)) ?>
 	</p>
 	<table cellpadding="6">
 		<tr>
-			<th><strong>Barang</strong></th>
-			<th><strong>Harga Satuan</strong></th>
-			<th><strong>Jumlah</strong></th>
-			<th><strong>Ongkir</strong></th>
-			<th><strong>Total Harga</strong></th>
+			<th>Nama Barang</th>
+			<th>Jumlah</th>
+			<th>Sub Total</th>
+		</tr>
+		<?php foreach ($item as $index => $item) : ?>
+			<tr>
+				<td><?= $item->nama; ?></td>
+				<td><?= $item->jumlah; ?></td>
+				<td style="text-align: right;"><?= "Rp " . number_format($item->sub_total, 2, ',', '.') ?></td>
+			</tr>
+		<?php endforeach; ?>
+		<tr>
+			<td colspan="2" style="text-align: right;">Ongkir</td>
+			<td style="text-align: right;"><?= "Rp " . number_format($head->ongkir, 2, ',', '.') ?></td>
 		</tr>
 		<tr>
-			<td><?= $barang->nama ?></td>
-			<td><?= "Rp " . number_format($barang->harga, 2, ',', '.') ?></td>
-			<td><?= $transaksi->jumlah ?></td>
-			<td><?= "Rp " . number_format($transaksi->ongkir, 2, ',', '.') ?></td>
-			<td><?= "Rp " . number_format($transaksi->total_harga, 2, ',', '.') ?></td>
+			<td colspan="2" style="text-align: right;">Total Pembayaran</td>
+			<td style="text-align: right;"><?= "Rp " . number_format($head->total_harga, 2, ',', '.') ?></td>
 		</tr>
 	</table>
 </body>

@@ -11,23 +11,21 @@ class Riwayat extends BaseController
     public function index()
     {
         $id = $this->session->get('id');
-        $pengirimanModel = new \App\Models\TransaksiModel();
-        $pengiriman = $pengirimanModel->findAll();
 
-        $transaksiModel = new \App\Models\TransaksiModel();
+        $headModel = new \App\Models\Header_TransaksiModel();
+
+        $head = $headModel->where('id_pembeli', $id)
+            ->orderBy('created_date', 'DESC')
+            ->paginate(10);
+
         $data = [
-            'transaksiModel' => $transaksiModel
-                ->select('transaksi.*,nama')
-                ->join('barang', 'barang.id_barang=transaksi.id_barang')
-                ->where('id_pembeli', $id)
-                ->orderBy('transaksi.created_date', 'DESC')
-                ->paginate(10),
-            'pager' => $transaksiModel->pager,
+            'head' => $head,
+            'pager' => $headModel->pager,
         ];
 
         return view('riwayat/index', [
             'data' => $data,
-            'pengiriman' => $pengiriman,
+            'title' => 'Riwayat Transaksi'
         ]);
     }
     public function view()
@@ -42,6 +40,7 @@ class Riwayat extends BaseController
 
         return view('riwayat/view', [
             'transaksi' => $transaksi,
+            'title' => 'Lihat Transaksi'
         ]);
     }
 }

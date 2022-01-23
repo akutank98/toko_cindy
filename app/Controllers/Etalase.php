@@ -27,6 +27,7 @@ class Etalase extends BaseController
 
         return view('etalase/index', [
             'data' => $data,
+            'title' => 'Etalase'
         ]);
     }
     public function search()
@@ -44,9 +45,89 @@ class Etalase extends BaseController
 
         return view('etalase/index', [
             'data' => $data,
+            'title' => 'Etalase'
         ]);
     }
 
+    public function single()
+    {
+        if ($this->request->getPost()) {
+            $headerEnt = new \App\Entities\Header_Transaksi();
+            $barangModel = new \App\Models\BarangModel();
+            $header = new \App\Models\Header_TransaksiModel();
+            $item = new \App\Models\Item_TransaksiModel();
+            $barangModel = new \App\Models\BarangModel();
+            $data = $this->request->getPost();
+            $alamat = $this->request->getPost('alamat');
+            $alamat .=
+                ', ' . $this->request->getPost('kabupaten') .
+                ', ' . $this->request->getPost('provinsi');
+            $headerEnt->id_pembeli = $this->session->get('id');
+            $headerEnt->fill($data);
+            $headerEnt->alamat = $alamat;
+            $headerEnt->created_by = $this->session->get('id');
+            $headerEnt->created_date = date("Y-m-d H:i:s");
+            $header->save($headerEnt);
+            $id_head = $header->insertID();
+
+            $itemEnt = new \App\Entities\Item_Transaksi();
+            $itemEnt->id_transaksi = $id_head;
+            $itemEnt->id_barang = $this->request->getPost('id_barang');
+            $itemEnt->jumlah = $this->request->getPost('jumlah');
+            $itemEnt->sub_total = $this->request->getPost('total_harga');
+
+            $barang = $barangModel->find($this->request->getPost('id_barang'));
+            $stok = $barang->stok;
+            $stokNew = $stok - $this->request->getPost('jumlah');
+            $data = [
+                'stok' => $stokNew,
+            ];
+            $barangModel->update($barang->id_barang, $data);
+            $item->save($itemEnt);
+            return redirect()->to(site_url('etalase/view/' . $id_head));
+        }
+    }
+
+    public function view()
+    {
+        $headerModel = new \App\Models\Header_TransaksiModel();
+        $itemModel = new \App\Models\Item_TransaksiModel();
+        $barangModel = new \App\Models\BarangModel();
+        $id = $this->request->uri->getSegment(3);
+        $header = $headerModel
+            ->select('header_transaksi.*,username')
+            ->join('user', 'user on id_pembeli = id_user')
+            ->find($id);
+        $item = $itemModel->where('id_transaksi', $header->id_header)->findAll();
+        return view('shoppingCart/view', [
+            'items' => $item,
+            'head' => $header,
+            'barangModel' =>
+            $barangModel,
+            'title' => "View transaksi .$id"
+        ]);
+    }
+
+    public function addCart()
+    {
+        $id = $this->request->uri->getSegment(3);
+        $barangModel = new \App\Models\BarangModel();
+        $barang = $barangModel->find($id);
+
+        $cart = \Config\Services::cart();
+        $cart->insert(array(
+            'id'      => $id,
+            'qty'     => 1,
+            'price'   => $barang->harga,
+            'name'    => $barang->nama,
+            'options' => array(
+                'gambar' => $barang->gambar,
+                'berat' => $barang->berat
+            )
+        ));
+        $this->session->setFlashdata('pesan', 'Barang telah ditambahkan kedalam keranjang');
+        return redirect()->to('Etalase/beli/' . $id);
+    }
     public function beli()
     {
         $id = $this->request->uri->getSegment(3);
@@ -55,41 +136,10 @@ class Etalase extends BaseController
         $model = $modelBarang->find($id);
         $provinsi = $this->rajaongkir('province');
 
-        if ($this->request->getPost()) {
-            $data = $this->request->getPost();
-            $this->validation->run($data, 'transaksi');
-            $errors = $this->validation->getErrors();
-
-            if (!$errors) {
-                $transaksiModel = new \App\Models\TransaksiModel();
-                $transaksi = new \App\Entities\Transaksi();
-                $barangModel = new \App\Models\BarangModel();
-                $id_barang = $this->request->getPost('id_barang');
-                $entityBarang = new \App\Entities\Barang();
-                $jumlah_pembelian = $this->request->getPost('jumlah');
-
-                $barang = $barangModel->find($id_barang);
-                $entityBarang->id_barang = $id_barang;
-                $entityBarang->stok = $barang->stok - $jumlah_pembelian;
-                $barangModel->save($entityBarang);
-                $transaksi->fill($data);
-                $transaksi->alamat .=
-                    ', ' . $this->request->getPost('kabupaten') .
-                    ', ' . $this->request->getPost('provinsi');
-                $transaksi->status = 0;
-                $transaksi->service = $this->request->getPost('service');
-                $transaksi->created_by = $this->session->get('id');
-                $transaksi->created_date = date("Y-m-d H:i:s");
-                $transaksiModel->save($transaksi);
-                $id = $transaksiModel->insertID();
-                //return
-                $segment = ['transaksi', 'view', $id];
-                return redirect()->to(site_url($segment));
-            }
-        }
         return view('etalase/beli', [
             'model' => $model,
             'provinsi' => json_decode($provinsi)->rajaongkir->results,
+            'title' => 'Beli'
         ]);
     }
     public function getCity()

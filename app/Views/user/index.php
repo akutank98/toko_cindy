@@ -13,17 +13,27 @@
 <div class="container">
     <table class="table">
         <thead>
-            <th>Id</th>
+            <th>ID</th>
             <th>Username</th>
-            <th>Created By</th>
+            <th>Role</th>
             <th>Created Date</th>
         </thead>
         <tbody>
+            <?php $i = 0; ?>
             <?php foreach ($data['users'] as $index => $user) : ?>
                 <tr>
                     <td><?= $user->id_user ?></td>
                     <td><?= $user->username ?></td>
-                    <td><?= $user->created_by ?></td>
+                    <td><?php
+                        $role = $user->role;
+                        if ($role == 0) {
+                            echo 'Owner';
+                        } else if ($role == 1) {
+                            echo 'Admin';
+                        } else {
+                            echo 'Customer';
+                        }
+                        ?></td>
                     <td><?= $user->created_date ?></td>
                 </tr>
             <?php endforeach ?>

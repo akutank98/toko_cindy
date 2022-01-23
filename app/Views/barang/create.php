@@ -5,7 +5,7 @@
 $nama = [
     'name' => 'nama',
     'id' => 'nama',
-    'value' =>  null,
+    'value' =>  old('nama'),
     'class' => 'form-control',
     'required' => true
 ];

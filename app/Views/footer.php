@@ -4,10 +4,9 @@
         text-align: center;
         padding: 10px 0;
         position: fixed;
-        top: 87vh;
+        top: 86vh;
         width: 100%;
         max-height: 15vh;
-        bottom: 0;
     }
 
     #social-wrapper {
@@ -86,13 +85,6 @@
 </div>
 <?= $this->section('script'); ?>
 <script>
-    // $(window).on("scroll", function() {
-    //     if ((window.innerHeight + window.scrollY) >= ) {
-    //         $(".site-footer").fadeIn("fast").addClass("show");
-    //     } else {
-    //         $(".site-footer").fadeOut("fast").removeClass("show");
-    //     }
-    // });
     $(window).scroll(function(event) {
         function footer() {
             var scroll = $(window).scrollTop();
@@ -101,15 +93,6 @@
             } else {
                 $(".site-footer").fadeOut("fast").removeClass("show");
             }
-            //autodismiss
-            // clearTimeout($.data(this, 'scrollTimer'));
-            // $.data(this, 'scrollTimer', setTimeout(function() {
-            //     if ($('.site-footer').is(':hover')) {
-            //         footer();
-            //     } else {
-            //         $(".site-footer").fadeOut("slow");
-            //     }
-            // }, 2000));
         }
         footer();
     });
