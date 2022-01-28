@@ -35,13 +35,12 @@ class Log extends BaseController
                 $start = date("Y-m-d", strtotime($date));
                 $end = date("Y-m-t", strtotime($date));
             } else  if ($this->request->getPost('opt') == 'date') {
-                $start = $date;
-                $end = $date;
+                $start = date("Y-m-d", strtotime($date));
+                $end = date('Y-m-d', strtotime($start . " +1 days"));
             } else if ($this->request->getPost('opt') == 'week') {
                 $start = date("Y-m-d", strtotime($date));
                 $end = date('Y-m-d', strtotime($start . " +7 days"));
             }
-
 
             $data = [
                 'log' => $logModel->where("change_date BETWEEN '$start' AND '$end'")->orderBy('change_date', 'DESC')->paginate(10),

@@ -56,7 +56,6 @@ class Etalase extends BaseController
             $barangModel = new \App\Models\BarangModel();
             $header = new \App\Models\Header_TransaksiModel();
             $item = new \App\Models\Item_TransaksiModel();
-            $barangModel = new \App\Models\BarangModel();
             $data = $this->request->getPost();
             $alamat = $this->request->getPost('alamat');
             $alamat .=
@@ -99,12 +98,11 @@ class Etalase extends BaseController
             ->join('user', 'user on id_pembeli = id_user')
             ->find($id);
         $item = $itemModel->where('id_transaksi', $header->id_header)->findAll();
-        return view('shoppingCart/view', [
+        return view('Etalase/view', [
             'items' => $item,
             'head' => $header,
-            'barangModel' =>
-            $barangModel,
-            'title' => "View transaksi .$id"
+            'barangModel' => $barangModel,
+            'title' => 'Lihat Transaksi'
         ]);
     }
 

@@ -35,7 +35,6 @@ class Transaksi extends BaseController
 
     public function index()
     {
-
         $headModel = new \App\Models\Header_TransaksiModel();
         $head = $headModel->select('header_transaksi.*,username')
             ->join('user', 'user on id_pembeli = id_user')
@@ -187,19 +186,19 @@ class Transaksi extends BaseController
     {
         $id = $this->request->uri->getSegment(3);
         $modelHeader = new \App\Models\Header_TransaksiModel();
-        $transaksi = $modelHeader->find($id);
+        if ($this->request->getPost('resi') != '') {
+            $resi = $this->request->getPost('resi');
+            $data = [
+                'resi' => $resi,
+                'status' => 2,
+                'updated_by' => $this->session->get('id'),
+                'updated_date' => date("Y-m-d H:i:s")
+            ];
 
-        $resi = $this->request->getPost('resi');
-        $data = [
-            'resi' => $resi,
-            'status' => 2,
-            'updated_by' => $this->session->get('id'),
-            'updated_date' => date("Y-m-d H:i:s")
-        ];
-
-        $modelHeader->update($id, $data);
-        //logging
-        $this->logging('tambah resi', 'header_transaksi', $id, date("Y-m-d H:i:s"), $this->session->get('id'));
+            $modelHeader->update($id, $data);
+            //logging
+            $this->logging('tambah resi', 'header_transaksi', $id, date("Y-m-d H:i:s"), $this->session->get('id'));
+        }
         return redirect()->to(site_url('transaksi/index'));
     }
     public function updateStatusTransaksi()
@@ -269,13 +268,10 @@ class Transaksi extends BaseController
                         ->findAll();
 
                     if ($tipe == 'bulan') {
-                        $title = 'Laporan Penjualan :' . $month . ' ' . $year;
                         $name = 'laporanPenjualan' . $month . $year . '.pdf';
                     } else if ($tipe == 'week') {
-                        $title = 'Laporan Penjualan Tanggal :' . $start . '-' . $end;
                         $name = 'laporanPenjualan' . $month . $year . '.pdf';
                     } else if ($tipe == 'date') {
-                        $title = 'Laporan Penjualan  :' . $date;
                         $name = 'laporanPenjualan' . $month . $year . '.pdf';
                     }
 

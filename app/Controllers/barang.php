@@ -122,7 +122,6 @@ class Barang extends BaseController
     }
     public function updateStok()
     {
-        //masih serror
         $barangModel = new \App\Models\BarangModel();
         $currentPage = $this->request->getPost('currentPage');
         $id_barang = $this->request->uri->getSegment(3);

@@ -120,7 +120,7 @@
 			<tr>
 				<th>ID Transaksi</th>
 				<th>Pembeli</th>
-				<th style="width: fit-content;">Alamat</th>
+				<th>Alamat</th>
 				<th>Service</th>
 				<th>Total</th>
 				<th>Tanggal</th>

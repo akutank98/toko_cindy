@@ -28,6 +28,8 @@ $password = [
 
 $session = session();
 $errors = $session->getFlashdata('errors');
+$success = $session->getFlashdata('success');
+
 ?>
 
 
@@ -37,6 +39,12 @@ $errors = $session->getFlashdata('errors');
         <div class="col-md-4 offset-md-4">
             <div class="card form-holder">
                 <div class="card-body">
+                    <?php if ($success != null) : ?>
+                        <div class="alert alert-success" id="d-success">
+                            <h4 class="alert-heading"><?= $success; ?> </h4>
+                            <hr>
+                        </div>
+                    <?php endif ?>
                     <h1>Login</h1>
                     <?php if ($errors != null) : ?>
                         <div class="alert alert-danger" id="d-error">
@@ -76,6 +84,9 @@ $errors = $session->getFlashdata('errors');
 <script>
     setTimeout(function() {
         $('#d-error').fadeOut('slow');
+    }, 3000);
+    setTimeout(function() {
+        $('#d-success').fadeOut('slow');
     }, 3000);
 </script>
 <?= $this->endSection(); ?>

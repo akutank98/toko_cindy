@@ -37,7 +37,6 @@ class Auth extends BaseController
             }
             $this->session->setFlashdata('errors_register', $errors);
         }
-
         return view('register', ['title' => 'Register']);
     }
     public function login()
@@ -128,7 +127,7 @@ class Auth extends BaseController
                 $tokenModel->delete($token->id_token);
                 // logging
                 $this->logging('update', 'user', $user->id_user, date("Y-m-d H:i:s"), $user->id_user, 'reset password');
-                $this->session->setFlashdata('success', ['Password telah berhasil diubah']);
+                $this->session->setFlashdata('success', 'Password telah berhasil diubah');
                 return redirect()->to(site_url('auth/login'));
             }
         } else {
@@ -158,7 +157,8 @@ class Auth extends BaseController
             $this->sendEmail('', $email, 'Reset Password', $message);
             $tokenModel->save($t);
             return view('tokenTerkirim', [
-                'title' => 'Token Terkirim'
+                'title' => 'Token Terkirim',
+                'user' => $user->email
             ]);
         } else {
             $this->session->setFlashdata('error', ['User Belum Terdaftar']);

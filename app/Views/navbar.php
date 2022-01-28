@@ -101,7 +101,7 @@ $session = session();
                 <?php if ($session->get('isLoggedIn')) : ?>
                     <div class="row g-2 mr-1 ml-1">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Halo, <?= session()->get('username'); ?></a>
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>Halo, <?= session()->get('username'); ?></strong></a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown02">
                                 <a class="dropdown-item" href="<?= site_url('User/ubahPassword') ?>">Ubah Password</a>
                                 <a class="dropdown-item" href="<?= site_url('User/ubahEmail') ?>">Ubah Email</a>

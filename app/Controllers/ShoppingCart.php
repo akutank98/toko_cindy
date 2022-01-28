@@ -22,6 +22,25 @@ class ShoppingCart extends BaseController
         ]);
     }
 
+    public function view()
+    {
+        $headerModel = new \App\Models\Header_TransaksiModel();
+        $itemModel = new \App\Models\Item_TransaksiModel();
+        $barangModel = new \App\Models\BarangModel();
+        $id = $this->request->uri->getSegment(3);
+        $header = $headerModel
+            ->select('header_transaksi.*,username')
+            ->join('user', 'user on id_pembeli = id_user')
+            ->find($id);
+        $item = $itemModel->where('id_transaksi', $header->id_header)->findAll();
+        return view('etalase/view', [
+            'items' => $item,
+            'head' => $header,
+            'barangModel' => $barangModel,
+            'title' => 'Lihat Transaksi'
+        ]);
+    }
+
     public function clear()
     {
         $cart = \Config\Services::cart();
@@ -48,7 +67,6 @@ class ShoppingCart extends BaseController
     {
         $i = 1;
         $cart = \Config\Services::cart();
-        $modelBarang = new \App\Models\BarangModel();
         if (isset($_POST)) {
             foreach ($cart->contents() as $items) {
                 $data = array(
