@@ -50,6 +50,9 @@ class Validation
 		'repeatPassword' => [
 			'rules' => 'required|matches[password]',
 		],
+		'email' => [
+			'rules' => 'required|is_unique[user.email]',
+		],
 	];
 
 	public $register_errors = [
@@ -65,6 +68,10 @@ class Validation
 		'repeatPassword' => [
 			'required' => '{field} Harus Diisi',
 			'matches' => 'Tidak Match Dengan Password'
+		],
+		'email' => [
+			'required' => '{field} Harus Diisi',
+			'is_unique' => '{field} telah terdaftar'
 		],
 	];
 	public $resetPassword = [

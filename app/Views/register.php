@@ -34,6 +34,12 @@ $repeatPassword = [
     'class' => 'form-control',
     'required' => 'required',
 ];
+$email = [
+    'name' => 'email',
+    'id' => 'email',
+    'class' => 'form-control',
+    'required' => 'required',
+];
 $session = session();
 $error = $session->getFlashData('errors_register');
 
@@ -69,9 +75,9 @@ $error = $session->getFlashData('errors_register');
                         <?= form_label("Repeat Password", "repeatPassword"); ?>
                         <?= form_password($repeatPassword); ?>
                     </div>
-                    <div>
-                        <label for="email">Email : </label>
-                        <input type="email" class="form-control" required>
+                    <div class="form-group">
+                        <?= form_label("Email", "email"); ?>
+                        <?= form_input($email); ?>
                     </div>
                     <div>Sudah punya akun?
                         <a href="<?= site_url('Auth/login') ?>"> Login</a>

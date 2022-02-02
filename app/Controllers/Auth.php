@@ -16,6 +16,7 @@ class Auth extends BaseController
         if ($this->request->getPost()) {
             //lakukan validasi untuk data yang di post
             $data = $this->request->getPost();
+
             $validate = $this->validation->run($data, 'register');
             $errors = $this->validation->getErrors();
 
@@ -29,6 +30,7 @@ class Auth extends BaseController
                 $user->email = $this->request->getPost('email');
                 $user->created_by = 0;
                 $user->created_date = date("Y-m-d H:i:s");
+                dd($user);
 
                 $userModel->save($user);
                 return view('login', [
