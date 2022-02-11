@@ -5,7 +5,7 @@
 	<form class="d-flex mb-3" role="form" action="<?= site_url('Transaksi/search');  ?>" method="post">
 		<?= csrf_field(); ?>
 		<input class="form-control me-2" name="id" type="search" placeholder="Cari Transaksi (ID)" aria-label="Search">
-		<button type="submit" class="btn btn-info">Search</button>
+		<button type="submit" class="btn btn-info">Cari</button>
 	</form>
 </div>
 <?php $num = 0; ?>
@@ -174,7 +174,7 @@
 										Apakah anda yakin akan mengubah status pembayaran transaksi dengan ID <?= $transaksi->id_header; ?>
 									</div>
 									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
 										<a href="/transaksi/updateStatusTransaksi/<?= $transaksi->id_header; ?>" type="button" class="btn btn-primary">Simpan</a>
 									</div>
 								</div>

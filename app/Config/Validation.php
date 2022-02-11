@@ -51,7 +51,7 @@ class Validation
 			'rules' => 'required|matches[password]',
 		],
 		'email' => [
-			'rules' => 'required|is_unique[user.email]',
+			'rules' => 'required',
 		],
 	];
 
@@ -71,7 +71,6 @@ class Validation
 		],
 		'email' => [
 			'required' => '{field} Harus Diisi',
-			'is_unique' => '{field} telah terdaftar'
 		],
 	];
 	public $resetPassword = [

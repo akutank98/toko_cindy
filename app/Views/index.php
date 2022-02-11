@@ -15,14 +15,16 @@
 		border-radius: 25px;
 	}
 
-
-
 	.footer-nav p {
 		text-align: center;
 	}
 </style>
 <div class="row">
 	<div class="container" style="max-width: 100%;">
+		<div class="alert-info mb-3">
+			<h3>Anda harus login terlebih dahulu sebelum dapat mengakses Website</h3>
+			<a href=" <?= site_url('Auth/login') ?>" class="text-decoration-none">Klik Disini Untuk Melakukan Login</a>
+		</div>
 		<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 			<ol class="carousel-indicators">
 				<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>

@@ -11,6 +11,15 @@ class Auth extends BaseController
         $this->session = session();
         $this->email = \Config\Services::email();
     }
+    public function index()
+    {
+        return view(
+            'index',
+            [
+                'title' => 'Halaman Utama'
+            ]
+        );
+    }
     public function register()
     {
         if ($this->request->getPost()) {
@@ -30,17 +39,44 @@ class Auth extends BaseController
                 $user->email = $this->request->getPost('email');
                 $user->created_by = 0;
                 $user->created_date = date("Y-m-d H:i:s");
-                dd($user);
+                $user->user_deleted = date("Y-m-d H:i:s");
 
                 $userModel->save($user);
-                return view('login', [
-                    'title' => ''
+                $userID = $userModel->insertID();
+                $this->verifikasiEmail($userID);
+                return view('tokenTerkirim', [
+                    'title' => 'Konfirmasi Email'
                 ]);
             }
             $this->session->setFlashdata('errors_register', $errors);
         }
         return view('register', ['title' => 'Register']);
     }
+    public function verifikasiEmail($id)
+    {
+        $tokenModel = new \App\Models\TokenModel();
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->onlyDeleted()->find($id);
+        if ($user != '') {
+            $token = bin2hex(random_bytes(15));
+            $t = new \App\Entities\Token();
+            $email = $user->email;
+            $t->token = $token;
+            $t->id_user = $user->id_user;
+            $message = '<h2>Silahkan klik tautan dibawah ini untuk melakukan aktivasi akun anda</h2><br>' . site_url('auth/activateAccount/' . $token);
+            $this->sendEmail('', $email, 'Aktivasi Akun', $message);
+            $tokenModel->save($t);
+            return view('tokenTerkirim', [
+                'title' => 'Token Terkirim',
+                'user' => $user->email,
+                'kode' => 'Verifikasi',
+            ]);
+        } else {
+            $this->session->setFlashdata('errors_register', ['User Belum Terdaftar']);
+            return redirect()->to(site_url('auth/register'));
+        }
+    }
+
     public function login()
     {
         if ($this->session->get('isLoggedIn')) {
@@ -85,6 +121,7 @@ class Auth extends BaseController
             ]);
         }
     }
+
     public function resetPassword($tokenPar)
     {
         $tokenModel = new \App\Models\TokenModel();
@@ -108,6 +145,35 @@ class Auth extends BaseController
             return redirect()->to(site_url('auth/lupaPassword'));
         }
     }
+
+    public function activateAccount($tokenPar)
+    {
+        $tokenModel = new \App\Models\TokenModel();
+        $token = $tokenModel->where('token', $tokenPar)->first();
+        if ($token != '') {
+            $currentDate = strtotime($token->created);
+            $futureDate = $currentDate + (60 * 5);
+            $time = date("Y-m-d H:i:s", $futureDate);
+
+            if (!$token->created < $time) {
+                $user = new \App\Models\UserModel();
+                $data = [
+                    'user_deleted' => null
+                ];
+                $user->update($token->id_user, $data);
+                $tokenModel->delete($token->id_token);
+                return view('login', [
+                    'title' => 'Login',
+                ]);
+            } else {
+                return redirect()->to(site_url('auth/register'));
+            }
+        } else {
+            $this->session->setFlashdata('errors_register', ['Token Invalid/ Expired']);
+            return redirect()->to(site_url('auth/register'));
+        }
+    }
+
     public function changePassword()
     {
         $tokenPar = $this->request->getPost('tokenPar');
@@ -160,7 +226,8 @@ class Auth extends BaseController
             $tokenModel->save($t);
             return view('tokenTerkirim', [
                 'title' => 'Token Terkirim',
-                'user' => $user->email
+                'user' => $user->email,
+                'kode' => 'Verifikasi',
             ]);
         } else {
             $this->session->setFlashdata('error', ['User Belum Terdaftar']);

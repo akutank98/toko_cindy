@@ -92,7 +92,12 @@ class ShoppingCart extends BaseController
     {
         $cart = \Config\Services::cart();
         $provinsi = $this->rajaongkir('province');
-
+        $alamatModel = new \App\Models\AlamatModel();
+        $alamat = $alamatModel
+            ->join('provinsi', 'alamat.provinsi = provinsi.province_id', 'left')
+            ->join('kabupaten', 'alamat.kabupaten = kabupaten.city_id', 'left')
+            ->where('alamat.id_user', $this->session->get('id'))
+            ->findAll();
         $total_weight = 0;
         foreach ($cart->contents() as $items) {
             $total_weight += $items['options']['berat'] * $items['qty'];
@@ -100,6 +105,7 @@ class ShoppingCart extends BaseController
         return view('shoppingCart/checkout', [
             'cart' => $cart,
             'total_weight' => $total_weight,
+            'alamat' => $alamat,
             'provinsi' => json_decode($provinsi)->rajaongkir->results,
             'title' => 'Checkout'
         ]);

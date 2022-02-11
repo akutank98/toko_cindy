@@ -7,8 +7,8 @@
 		</div>
 		<form class="d-flex mb-3" role="form" action="<?= site_url('barang/search'); ?>" method="post">
 			<?= csrf_field(); ?>
-			<input class="form-control me-2" name="barang" type="search" placeholder="Cari Barang" aria-label="Search">
-			<button type="submit" class="btn btn-info">Search</button>
+			<input class="form-control me-2" name="barang" type="search" placeholder="Cari Barang" aria-label="Search" minlength="2">
+			<button type="submit" class="btn btn-info">Cari</button>
 		</form>
 	</div>
 	<div class="row">
@@ -58,13 +58,13 @@
 						<td>
 							<img class="img-fluid" style="object-fit: contain;" width="200px" alt="gambar" src="<?= base_url('uploads/' . $barang->gambar) ?>" />
 						</td>
-						<td><?= $barang->harga ?></td>
+						<td><?= "Rp " . number_format($barang->harga, 2, ',', '.'); ?></td>
 						<td><?= $barang->stok ?></td>
 						<td>
-							<a href="<?= site_url('barang/view/' . $barang->id_barang) ?>" class="btn btn-primary">View</a>
+							<a href="<?= site_url('barang/view/' . $barang->id_barang) ?>" class="btn btn-primary">Lihat</a>
 							<!-- hanya owner yang dapat update dan delete data -->
 							<?php if (session()->get('role') == 0) : ?>
-								<a href="<?= site_url('barang/update/' . $barang->id_barang) ?>" class="btn btn-success">Update</a>
+								<a href="<?= site_url('barang/update/' . $barang->id_barang) ?>" class="btn btn-success">Ubah Detail</a>
 								<!-- modal trigger button owner-->
 								<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalStok<?= $barang->id_barang; ?>">
 									Ubah Stok
@@ -86,7 +86,7 @@
 										<div class="modal-header">
 											<h5 class="modal-title" id="exampleModalLabel">
 												Konfirmasi Hapus Barang</h5>
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Batal">
 											</button>
 										</div>
 										<div class="modal-body">

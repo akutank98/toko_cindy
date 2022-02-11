@@ -28,17 +28,16 @@ class Barang extends BaseController
         $model = new \App\Models\BarangModel();
         if (isset($_POST)) {
             $nama = $_POST['barang'];
+            $data = [
+                'barangs' => $model->like('nama', $nama)
+                    ->paginate(10),
+                'pager' => $model->pager,
+            ];
+            return view('barang/index', [
+                'data' => $data,
+                'title' => 'Barang'
+            ]);
         }
-        $data = [
-            'barangs' => $model->like('nama', $nama)
-                ->paginate(10),
-            'pager' => $model->pager,
-        ];
-
-        return view('barang/index', [
-            'data' => $data,
-            'title' => 'Barang'
-        ]);
     }
 
     public function view()
@@ -52,6 +51,35 @@ class Barang extends BaseController
             'barang' => $barang,
             'title' => 'Detail Barang'
         ]);
+    }
+
+    public function tambahKategori()
+    {
+        $kategoriModel = new \App\Models\KategoriModel();
+        if ($this->request->getPost()) {
+            $data = [
+                'nama_kategori' => $this->request->getPost('nama'),
+                'kategori_deleted' => null,
+            ];
+            $kategoriModel->insert($data);
+            $this->logging('tambah kategori', 'kategori', $kategoriModel->getInsertID(), date("Y-m-d H:i:s"), $this->session->get('id'));
+            return redirect()->to('barang/tambahKategori');
+        }
+
+        $kategori = $kategoriModel->findAll();
+        return view('barang/tambahKategori', [
+            'kategori' => $kategori,
+            'title' => 'Tambah Kategori Barang'
+        ]);
+    }
+
+    public function deleteKategoribarang()
+    {
+        $id_kategori = $this->request->uri->getSegment(3);
+        $kategoriModel = new \App\Models\KategoriModel();
+        $kategoriModel->delete($id_kategori);
+        $this->logging('hapus kategori', 'kategori', $id_kategori, date("Y-m-d H:i:s"), $this->session->get('id'));
+        return redirect()->to('barang/tambahKategori');
     }
 
     public function create()
@@ -80,8 +108,11 @@ class Barang extends BaseController
             }
             $this->session->setFlashdata('errors_create', $errors);
         }
+        $kategoriModel = new \App\Models\KategoriModel();
+        $kategori = $kategoriModel->findAll();
         return view('barang/create', [
-            'title' => 'Tambah Barang'
+            'title' => 'Tambah Barang',
+            'kategori' => $kategori
         ]);
     }
 

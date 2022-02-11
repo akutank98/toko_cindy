@@ -97,10 +97,13 @@
                             <?php } else { ?>
                                 <a href="https://api.whatsapp.com/send?phone=628155051048&text=<?= urlencode($sapa . ' Admin / Owner Toko Cindy') . '%0a' . urlencode('Konfirmasi pesanan dengan ID : ' . $transaksi->id_header) . '%0a' . urlencode('ID User :  ' . $transaksi->id_pembeli) . '%0a' . urlencode('Tanggal transaksi : ' . date("d-m-Y", strtotime($transaksi->created_date))) . urlencode(' Total Pembelian : ' . date("d-m-Y", strtotime($transaksi->total_harga))); ?>" target="_blank" class="text-info">Hubungi Admin</a>
                             <?php } ?>
+                        </td>
+                        <td>
                             <button type="button" class="btn btn-secondary ml-1" data-toggle="modal" data-target="#exampleModalItem<?= $transaksi->id_header; ?>">
                                 Lihat Rincian Pembelian &raquo;
                             </button>
                         </td>
+
                     </tr>
                 <?php endforeach; ?>
             </div>

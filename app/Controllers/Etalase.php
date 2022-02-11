@@ -17,7 +17,8 @@ class Etalase extends BaseController
     public function index()
     {
         $barangModel = new \App\Models\BarangModel();
-
+        $kategoriModel = new \App\Models\KategoriModel();
+        $kategori = $kategoriModel->findAll();
         $data = [
             'model' => $barangModel
                 ->where('stok >', 0)
@@ -27,26 +28,59 @@ class Etalase extends BaseController
 
         return view('etalase/index', [
             'data' => $data,
+            'kategori' => $kategori,
             'title' => 'Etalase'
         ]);
     }
     public function search()
     {
         $barangModel = new \App\Models\BarangModel();
-
-        if (isset($_POST)) {
-            $barang = $_POST['barang'];
+        $kategoriModel = new \App\Models\KategoriModel();
+        $kategori = $kategoriModel->findAll();
+        if ($this->request->getGet()) {
+            $k = $this->request->getGet('kategori');
+            $barang = $this->request->getGet('barang');
+            if ($this->request->getGet('sort') == '') {
+                $data = [
+                    'model' => $barangModel
+                        ->where("nama LIKE '%$barang%' AND id_kategori LIKE '%$k%' AND stok >", 0)
+                        ->paginate(10),
+                    'pager' => $barangModel->pager,
+                ];
+            } elseif ($this->request->getGet('sort') == 'termurah') {
+                $data = [
+                    'model' => $barangModel
+                        ->where("nama LIKE '%$barang%' AND id_kategori LIKE '%$k%' AND stok >", 0)
+                        ->orderBy('harga', 'asc')
+                        ->paginate(10),
+                    'pager' => $barangModel->pager,
+                ];
+            } elseif ($this->request->getGet('sort') == 'termahal') {
+                $data = [
+                    'model' => $barangModel
+                        ->where("nama LIKE '%$barang%' AND id_kategori LIKE '%$k%' AND stok >", 0)
+                        ->orderBy('harga', 'desc')
+                        ->paginate(10),
+                    'pager' => $barangModel->pager,
+                ];
+            } elseif ($this->request->getGet('sort') == 'terlaris') {
+                $data = [
+                    'model' => $barangModel
+                        ->select('barang.*, SUM(item_transaksi.jumlah) as jml')
+                        ->join('item_transaksi', 'barang.id_barang = item_transaksi.id_barang', 'left')
+                        ->where("nama LIKE '%$barang%' AND id_kategori LIKE '%$k%' AND stok >", 0)
+                        ->groupBy('barang.id_barang')
+                        ->orderBy('harga', 'asc')
+                        ->paginate(10),
+                    'pager' => $barangModel->pager,
+                ];
+            }
+            return view('etalase/search', [
+                'data' => $data,
+                'kategori' => $kategori,
+                'title' => 'Etalase'
+            ]);
         }
-        $data = [
-            'model' => $barangModel->like('nama', $barang)
-                ->paginate(10),
-            'pager' => $barangModel->pager,
-        ];
-
-        return view('etalase/index', [
-            'data' => $data,
-            'title' => 'Etalase'
-        ]);
     }
 
     public function single()

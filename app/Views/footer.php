@@ -83,6 +83,7 @@
         </nav>
     </footer>
 </div>
+
 <?= $this->section('script'); ?>
 <script>
     $(window).scroll(function(event) {

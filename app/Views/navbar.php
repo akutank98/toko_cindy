@@ -41,6 +41,7 @@ $session = session();
                             <a class="dropdown-item" href="<?= site_url('Barang/index') ?>">List Barang</a>
                             <a class="dropdown-item" href="<?= site_url('Barang/barangKosong') ?>">Barang Stok Kosong</a>
                             <a class="dropdown-item" href="<?= site_url('Barang/create') ?>">Tambah Barang</a>
+                            <a class="dropdown-item" href="<?= site_url('Barang/tambahKategori') ?>">Tambah Kategori</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -103,6 +104,9 @@ $session = session();
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-white" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>Halo, <?= session()->get('username'); ?></strong></a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown02">
+                                <?php if (session()->get('role') == 2) : ?>
+                                    <a class="dropdown-item" href="<?= site_url('User/alamat') ?>">Alamat Tersimpan</a>
+                                <?php endif; ?>
                                 <a class="dropdown-item" href="<?= site_url('User/ubahPassword') ?>">Ubah Password</a>
                                 <a class="dropdown-item" href="<?= site_url('User/ubahEmail') ?>">Ubah Email</a>
                                 <a class="dropdown-item" href="<?= site_url('Auth/logout') ?>">Logout</a>
@@ -112,6 +116,5 @@ $session = session();
                 <?php endif ?>
             </ul>
         </div>
-
     </div>
 </nav>

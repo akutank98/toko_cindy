@@ -78,11 +78,21 @@ $errors = $session->getFlashdata('errors_create');
         <?= form_label("Stok", "stok") ?>
         <?= form_input($stok) ?>
     </div>
-
-    <label for="ukuran">Masukkan ukuran</label>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="ukuran" id="inlineRadio1" value="S" required>
-        <label class="form-check-label" for="inlineRadio1">S</label>
+    <div class="form-group">
+        <label for="kategori">Masukkan Kategori</label>
+        <select class="form-control" name="kategori" required>
+            <option value="">Semua Kategori</option>
+            <?php foreach ($kategori as $k) : ?>
+                <option value="<?= $k->id_kategori ?>"><?= $k->nama_kategori ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="ukuran">Masukkan ukuran</label>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="ukuran" id="inlineRadio1" value="S" required>
+            <label class="form-check-label" for="inlineRadio1">S</label>
+        </div>
     </div>
     <div class="form-check form-check-inline">
         <input class="form-check-input" type="radio" name="ukuran" id="inlineRadio2" value="M">
